@@ -2,18 +2,18 @@ var mongoose = require( 'mongoose' );
 
 /*
 
-Note:
-To this test project as it is:
+ Note:
+ To this test project as it is:
 
-Start your MongoDB database.
-Start mongo.exe and do:
-  use testdb
-  db.testusers.insert({userName : "Lars", email :"lam@cphbusiness.dk",pw: "test",created : new Date()})
-  db.testusers.insert({userName : "Henrik", email :"hsty@cphbusiness.dk",pw: "test",created : new Date()})
-  db.testusers.insert({userName : "Tobias", email :"tog@cphbusiness.dk",pw: "test",created : new Date()})
-  db.testusers.insert({userName : "Anders", email :"aka@cphbusiness.dk",pw: "test",created : new Date()})
+ Start your MongoDB database.
+ Start mongo.exe and do:
+ use testdb
+ db.testusers.insert({userName : "Lars", email :"lam@cphbusiness.dk",pw: "test",created : new Date()})
+ db.testusers.insert({userName : "Henrik", email :"hsty@cphbusiness.dk",pw: "test",created : new Date()})
+ db.testusers.insert({userName : "Tobias", email :"tog@cphbusiness.dk",pw: "test",created : new Date()})
+ db.testusers.insert({userName : "Anders", email :"aka@cphbusiness.dk",pw: "test",created : new Date()})
 
-*/
+ */
 var dbURI;
 
 //This is set by the backend tests
@@ -21,7 +21,7 @@ if( typeof global.TEST_DATABASE != "undefined" ) {
   dbURI = global.TEST_DATABASE;
 }
 else{
-  dbURI = 'mongodb://localhost/testdb';
+  dbURI = 'mongodb://team:team@ds053190.mongolab.com:53190/sem3project';
 }
 
 mongoose.connect(dbURI);
@@ -46,15 +46,64 @@ process.on('SIGINT', function() {
   });
 });
 
+var teacherSchema = mongoose.Schema({
+      fName: {type: String, index: true},
+      lName: {type: String, index: true},
+      email: {type: String},
+      username: {type: String},
+      classIds: [{cid: {type: String}}]},
 
-/** User SCHEMA **/
-/** Replace this Schema with your own(s) **/
-var usersSchema = new mongoose.Schema({
-  userName : String,
-  email: {type: String, unique: true},
-  pw: String,
-  created: { type: Date, default: new Date() }
-});
+    { collection: 'teacher' }
+);
 
-mongoose.model( 'User', usersSchema,"testusers" );
+var classSchema = mongoose.Schema({
+      name: { type: String, index: true},
+      semesterIds: [{sid: {type: String}}]},
 
+    { collection: 'class' }
+);
+
+var semesterSchema = mongoose.Schema({
+      name: { type: String, index: true},
+      startingDate: {type: Date},
+      endingDate: {type: Date},
+      periodIds: [{pid: {type: String}}]},
+
+    { collection: 'semester' }
+);
+
+var periodSchema = mongoose.Schema({
+      name: { type: String, index: true},
+      maxPoints: {type: Number},
+      reqPoints: {type: Number},
+      taskIds: [{tid: {type: String}}],
+      studentIds: [{sid: {type: String}}]},
+
+    { collection: 'period' }
+);
+
+var studentSchema = mongoose.Schema({
+      fName: {type: String, index: true},
+      lName: {type: String, index: true},
+      email: {type: String},
+      username: {type: String},
+      totalAchievedPoints: {type: Number},
+      doneTasks: [{taskId: {type: String}, achievedPoints: {type: Number}}]},
+
+    { collection: 'student' }
+);
+
+var taskSchema = mongoose.Schema({
+      name: {type: String, index: true},
+      description: {type: String},
+      maxPoints: {type: Number}},
+
+    { collection: 'task' }
+);
+
+exports.TeacherModel = mongoose.model('teacher', teacherSchema, "teacher");
+exports.ClassModel = mongoose.model('class', classSchema, "class");
+exports.SemesterModel = mongoose.model('semester', semesterSchema, "semester");
+exports.PeriodModel = mongoose.model('period', periodSchema, "period");
+exports.StudentModel = mongoose.model('student', studentSchema, "student");
+exports.TaskModel = mongoose.model('task', taskSchema, "task");
