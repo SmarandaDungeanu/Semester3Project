@@ -1,7 +1,75 @@
 <div class="alert alert-danger" role="alert" ng-show="error">{{error}}</div>
-<p>This is the partial for view 3.</p>
-<p>Data is fetched from a REST service, connected to MongoDB </p>
-<ul>
-  <li ng-repeat="user in users"> {{user.userName}} {{user.email}} </li>
-</ul>
-</p>
+<div class="dropdown dropdown-menu-right">
+  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true" ng-click="getAllClasses()">
+    <b>Your Classes</b>
+    <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1" ng-repeat="cls in classes">
+    <li role="presentation"><a role="menuitem" tabindex="-1" href="">{{cls.name}}</a></li>
+  </ul>
+</div>
+<div class="col-md-9" >
+  <accordion close-others="true">
+    <accordion-group heading={{semester.name}}   ng-click="getPeriodsOfSemester(semester)" ng-repeat="semester in semesters | orderBy:'name':reverse">
+                <table class="table">
+                  <thead>
+                  <tr>
+                    <td><b>Periods</b></td>
+                  </tr>
+                  </thead>
+                  <tbody  ng-repeat="period in currentPeriods">
+                  <tr>
+                    <td>{{period.name}}</td>
+                  </tr>
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <td ng-click="createNewPeriod(semester._id)"><a href="">Add more periods</a></td>
+                    </tr>
+                  </tfoot>
+                </table>
+    </accordion-group>
+  </accordion>
+</div>
+<div class="col-md-3" style="border: thin lightblue solid; border-radius: 5px;padding: 1em;" class="form-group">
+  <!--NEW SEMESTER FORM-->
+  <form class="form-horizontal" ng-show="showSemForm">
+    <fieldset>
+      <legend>New Semester</legend>
+      <label for="sname">Name: </label>
+      <input type="text" ng-model="newSem.name" id="sname" placeholder="Name" class="form-control">
+
+      <label for="startingDate">Starting Date: </label>
+      <input type="date" ng-model="newSem.startingDate" id="startingDate" class="form-control">
+
+      <label for="endingDate">Ending Date: </label>
+      <input type="date" ng-model="newSem.endingDate" id="endingDate" class="form-control">
+
+      </br>
+      <button class="btn btn-primary" ng-click="saveSemester()">Save Semester</button>
+
+    </fieldset>
+  </form>
+
+  <!--NEW PERIOD FORM-->
+  <form class="form-horizontal" ng-show="showPerForm">
+    <fieldset>
+      <legend>New Period</legend>
+      <label for="pname">Name: </label>
+      <input type="text" ng-model="newPer.name" id="pname" placeholder="Name" class="form-control">
+
+      <label for="maxPoints">Maximum Points: </label>
+      <input type="number" ng-model="newPer.maxPoints" id="maxPoints" placeholder="Maximum Points" class="form-control">
+
+      <label for="reqPoints">Required Points: </label>
+      <input type="number" ng-model="newPer.reqPoints" id="reqPoints" placeholder="Required Points" class="form-control">
+
+
+      </br>
+      <button class="btn btn-primary" ng-click="addPeriodForSemester()">Add Period</button>
+
+    </fieldset>
+  </form>
+</div>
+
+

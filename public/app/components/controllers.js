@@ -1,4 +1,4 @@
-angular.module('myAppRename.controllers', []).
+angular.module('myAppRename.controllers', [ 'ui.bootstrap']).
   controller('AppCtrl', function ($scope, $http, $window,$location) {
 
     function url_base64_decode(str) {
@@ -60,7 +60,97 @@ angular.module('myAppRename.controllers', []).
 
   .controller('MyCtrl2', function ($scope) {
     // write MyCtrl2 here
-  });
+  })
+    .controller('View3Ctrl', function ($scope, $http) {
+
+
+        $http({
+          method: 'GET',
+          url: '/semesters'
+        }).
+            success(function (data, status, headers, config) {
+              $scope.semesters = data;
+              $scope.error = null;
+            }).
+            error(function (data, status, headers, config) {
+              if (status == 401) {
+                $scope.error = "You are not authenticated to request these data";
+                return;
+              }
+              $scope.error = data;
+            });
+      $scope.getPeriodsOfSemester = function(semester){
+        $http({
+          method: 'GET',
+          url: '/periods/semester/'+semester._id
+        }).
+            success(function (data, status, headers, config){
+              $scope.currentPeriods = data;
+              $scope
+            })
+            .error(function (data, status, headers, config) {
+              $scope.error = data;
+            });
+      };
+
+      $scope.saveSemester = function(){
+        $http({
+          method: 'POST',
+          url: '/semester/'+$scope.newSem.name+'/'+$scope.newSem.startingDate+'/'+$scope.newSem.endingDate
+        }).
+            success(function (data, status, headers, config){
+              $scope.semesters.push(data);
+            })
+            .error(function (data, status, headers, config) {
+              $scope.error = data;
+            });
+        $scope.newSem = {};
+      };
+
+      $scope.createNewPeriod = function(semId){
+        $scope.showPerForm = true;
+        $scope.showSemForm = false;
+
+        $scope.addPeriodForSemester = function(){
+          $http({
+            method: 'POST',
+            url: '/period/'+semId+'/'+$scope.newPer.name+'/'+$scope.newPer.maxPoints+'/'+$scope.newPer.reqPoints
+          }).
+              success(function (data, status, headers, config){
+                $scope.currentPeriods.push(data);
+                $scope.showSemForm = true;
+                $scope.showPerForm = false;
+              })
+              .error(function (data, status, headers, config) {
+                $scope.error = data;
+              });
+          $scope.newPer = {};
+        }
+      };
+
+      $scope.getAllClasses = function(){
+        $http({
+          method: 'GET',
+          url: '/classes'
+        }).
+            success(function (data, status, headers, config) {
+              $scope.classes = data;
+              $scope.error = null;
+            }).
+            error(function (data, status, headers, config) {
+              if (status == 401) {
+                $scope.error = "You are not authenticated to request these data";
+                return;
+              }
+              $scope.error = data;
+            });
+      };
+
+
+      $scope.showSemForm = true;
+      $scope.showPerForm = false;
+
+    });
 
 
 
