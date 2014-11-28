@@ -64,13 +64,34 @@ angular.module('myAppRename.controllers', [ 'ui.bootstrap']).
     .controller('View3Ctrl', function ($scope, $http) {
 
 
+        //$http({
+        //  method: 'GET',
+        //  url: '/semesters'
+        //}).
+        //    success(function (data, status, headers, config) {
+        //      $scope.semesters = data;
+        //      $scope.error = null;
+        //    }).
+        //    error(function (data, status, headers, config) {
+        //      if (status == 401) {
+        //        $scope.error = "You are not authenticated to request these data";
+        //        return;
+        //      }
+        //      $scope.error = data;
+        //    });
+
+
+      $scope.getSemestersOfClass = function(cls){
         $http({
           method: 'GET',
-          url: '/semesters'
+          url: '/semesters/class/'+cls._id
         }).
             success(function (data, status, headers, config) {
+              $scope.currentClassId = cls._id;
+              $scope.currentClassName = cls.name;
               $scope.semesters = data;
               $scope.error = null;
+              $scope.clicked = true;
             }).
             error(function (data, status, headers, config) {
               if (status == 401) {
@@ -79,53 +100,6 @@ angular.module('myAppRename.controllers', [ 'ui.bootstrap']).
               }
               $scope.error = data;
             });
-      $scope.getPeriodsOfSemester = function(semester){
-        $http({
-          method: 'GET',
-          url: '/periods/semester/'+semester._id
-        }).
-            success(function (data, status, headers, config){
-              $scope.currentPeriods = data;
-              $scope
-            })
-            .error(function (data, status, headers, config) {
-              $scope.error = data;
-            });
-      };
-
-      $scope.saveSemester = function(){
-        $http({
-          method: 'POST',
-          url: '/semester/'+$scope.newSem.name+'/'+$scope.newSem.startingDate+'/'+$scope.newSem.endingDate
-        }).
-            success(function (data, status, headers, config){
-              $scope.semesters.push(data);
-            })
-            .error(function (data, status, headers, config) {
-              $scope.error = data;
-            });
-        $scope.newSem = {};
-      };
-
-      $scope.createNewPeriod = function(semId){
-        $scope.showPerForm = true;
-        $scope.showSemForm = false;
-
-        $scope.addPeriodForSemester = function(){
-          $http({
-            method: 'POST',
-            url: '/period/'+semId+'/'+$scope.newPer.name+'/'+$scope.newPer.maxPoints+'/'+$scope.newPer.reqPoints
-          }).
-              success(function (data, status, headers, config){
-                $scope.currentPeriods.push(data);
-                $scope.showSemForm = true;
-                $scope.showPerForm = false;
-              })
-              .error(function (data, status, headers, config) {
-                $scope.error = data;
-              });
-          $scope.newPer = {};
-        }
       };
 
       $scope.getAllClasses = function(){
@@ -146,9 +120,91 @@ angular.module('myAppRename.controllers', [ 'ui.bootstrap']).
             });
       };
 
+      $scope.getPeriodsOfSemester = function(semester){
+        $http({
+          method: 'GET',
+          url: '/periods/semester/'+semester._id
+        }).
+            success(function (data, status, headers, config){
+              $scope.currentPeriods = data;
+              $scope
+            })
+            .error(function (data, status, headers, config) {
+              $scope.error = data;
+            });
+      };
+      $scope.createNewSemester = function(){
+        $scope.showSemForm = true;
+        $scope.showPerForm = false;
+        $scope.showClsForm = false;
 
-      $scope.showSemForm = true;
+          $scope.saveSemester = function(){
+            $http({
+              method: 'POST',
+              url: '/semester/'+$scope.currentClassId+'/'+$scope.newSem.name+'/'+$scope.newSem.startingDate+'/'+$scope.newSem.endingDate
+            }).
+                success(function (data, status, headers, config){
+                  $scope.semesters.push(data);
+                })
+                .error(function (data, status, headers, config) {
+                  $scope.error = data;
+                });
+            $scope.newSem = {};
+          };
+      };
+
+      $scope.createNewPeriod = function(semester){
+        $scope.showSemForm = false;
+        $scope.showPerForm = true;
+        $scope.showClsForm = false;
+        $scope.currentSemesterName = semester.name;
+        $scope.addPeriodForSemester = function(){
+          $http({
+            method: 'POST',
+            url: '/period/'+semester._id+'/'+$scope.newPer.name+'/'+$scope.newPer.maxPoints+'/'+$scope.newPer.reqPoints
+          }).
+              success(function (data, status, headers, config){
+
+                $scope.currentPeriods.push(data);
+              })
+              .error(function (data, status, headers, config) {
+                $scope.error = data;
+              });
+          $scope.newPer = {};
+        }
+      };
+
+      $scope.createNewClass = function(){
+        $scope.showSemForm = false;
+        $scope.showPerForm = false;
+        $scope.showClsForm = true;
+        $scope.saveClass = function(){
+          $http({
+            method: 'POST',
+            url: '/class/'+$scope.newCls.name
+          }).
+              success(function (data, status, headers, config){
+              //  $scope.classes.push(data);
+              })
+              .error(function (data, status, headers, config) {
+                $scope.error = data;
+              });
+          $scope.newCls = {};
+        };
+      };
+
+
+      $scope.cancel = function(){
+        $scope.showSemForm = false;
+        $scope.showPerForm = false;
+        $scope.showClsForm = false;
+      };
+
+
+      $scope.showSemForm = false;
       $scope.showPerForm = false;
+      $scope.showClsForm = false;
+      $scope.clicked = false;
 
     });
 

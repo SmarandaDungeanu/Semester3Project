@@ -1,12 +1,15 @@
 <div class="alert alert-danger" role="alert" ng-show="error">{{error}}</div>
 <div class="dropdown dropdown-menu-right">
-  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true" ng-click="getAllClasses()">
+  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true"  ng-click="getAllClasses()">
     <b>Your Classes</b>
     <span class="caret"></span>
   </button>
-  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1" ng-repeat="cls in classes">
-    <li role="presentation"><a role="menuitem" tabindex="-1" href="">{{cls.name}}</a></li>
+  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+    <li role="presentation"  ng-repeat="cls in classes| orderBy:'name':reverse"><a role="menuitem" tabindex="-1" href="" ng-click="getSemestersOfClass(cls)">{{cls.name}}</a></li>
+    <li role="presentation" class="divider"></li>
+    <li role="presentation"><a role="menuitem" tabindex="-1" href="" ng-click="createNewClass()">Add more classes</a></li>
   </ul>
+
 </div>
 <div class="col-md-9" >
   <accordion close-others="true">
@@ -24,18 +27,20 @@
                   </tbody>
                   <tfoot>
                     <tr>
-                      <td ng-click="createNewPeriod(semester._id)"><a href="">Add more periods</a></td>
+                      <td ng-click="createNewPeriod(semester)"><a href="">Add more periods</a></td>
                     </tr>
                   </tfoot>
                 </table>
     </accordion-group>
   </accordion>
+  <button class="btn btn-primary" ng-click="createNewSemester()" ng-show="clicked">Add More Semesters</button>
 </div>
-<div class="col-md-3" style="border: thin lightblue solid; border-radius: 5px;padding: 1em;" class="form-group">
+
   <!--NEW SEMESTER FORM-->
-  <form class="form-horizontal" ng-show="showSemForm">
+<div class="col-md-3" style="border: thin lightblue solid; border-radius: 5px;padding: 1em;" class="form-group" ng-show="showSemForm">
+  <form class="form-horizontal">
     <fieldset>
-      <legend>New Semester</legend>
+      <legend>New Semester - for class {{currentClassName}}</legend>
       <label for="sname">Name: </label>
       <input type="text" ng-model="newSem.name" id="sname" placeholder="Name" class="form-control">
 
@@ -47,14 +52,17 @@
 
       </br>
       <button class="btn btn-primary" ng-click="saveSemester()">Save Semester</button>
+      <button class="btn btn-primary" ng-click="cancel()">Cancel</button>
 
     </fieldset>
   </form>
+</div>
 
   <!--NEW PERIOD FORM-->
-  <form class="form-horizontal" ng-show="showPerForm">
+<div class="col-md-3" style="border: thin lightblue solid; border-radius: 5px;padding: 1em;" class="form-group" ng-show="showPerForm">
+  <form class="form-horizontal" >
     <fieldset>
-      <legend>New Period</legend>
+      <legend>New Period - for {{currentSemesterName}}</legend>
       <label for="pname">Name: </label>
       <input type="text" ng-model="newPer.name" id="pname" placeholder="Name" class="form-control">
 
@@ -67,9 +75,26 @@
 
       </br>
       <button class="btn btn-primary" ng-click="addPeriodForSemester()">Add Period</button>
+      <button class="btn btn-primary" ng-click="cancel()">Cancel</button>
 
     </fieldset>
   </form>
 </div>
+  <!--NEW CLASS FORM-->
+<div class="col-md-3" style="border: thin lightblue solid; border-radius: 5px;padding: 1em;" class="form-group" ng-show="showClsForm">
+  <form class="form-horizontal" >
+    <fieldset>
+      <legend>New Class</legend>
+      <label for="cname">Name: </label>
+      <input type="text" ng-model="newCls.name" id="cname" placeholder="Name" class="form-control">
+
+      </br>
+      <button class="btn btn-primary" ng-click="saveClass()">Add Class</button>
+      <button class="btn btn-primary" ng-click="cancel()">Cancel</button>
+
+    </fieldset>
+  </form>
+</div>
+
 
 

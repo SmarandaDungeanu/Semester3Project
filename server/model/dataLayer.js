@@ -81,6 +81,15 @@ function getPeriodsOfSemester(sem, callback){
     });
 }
 
+function createNewClass(cls, callback) {
+    model.ClassModel.create(cls, function (err, data) {
+        if (err) {
+            return callback(err);
+        }
+        callback(null,data);
+    });
+}
+
 function createNewSemester(semester, callback) {
     model.SemesterModel.create(semester, function (err, data) {
         if (err) {
@@ -96,16 +105,6 @@ function updateClass(cls, callback){
             return callback(err);
         }
         callback(null, data)
-    });
-}
-
-function saveSemester(semester,callback){
-    s = new model.SemesterModel(semester);
-    s.save(function(err,data){
-        if(err){
-            return callback(err);
-        }
-        callback(null,data)
     });
 }
 
@@ -127,16 +126,6 @@ function createNewPeriod(period, callback) {
     });
 }
 
-function savePeriod(period,callback){
-    p = new model.PeriodModel(period);
-    p.save(function(err,data){
-        if(err){
-            return callback(err);
-        }
-        callback(null,data)
-    });
-}
-
 function getSemestersOfClass(cls, callback){
     var sIds = [];
     cls.semesterIds.forEach(function(semesterId){
@@ -144,12 +133,12 @@ function getSemestersOfClass(cls, callback){
     });
     model.SemesterModel.find({'_id': {$in: sIds}}, function(err, data){
         if (err) {
+            console.log(err);
             return callback(err);
         }
         callback(null,data);
     });
 }
-
 
  module.exports = {
      getAllTeachers: getAllTeachers,
@@ -165,6 +154,7 @@ function getSemestersOfClass(cls, callback){
      updateSemester: updateSemester,
      createNewPeriod: createNewPeriod,
      getSemestersOfClass: getSemestersOfClass,
-     updateClass: updateClass
+     updateClass: updateClass,
+     createNewClass: createNewClass
     // savePeriod: savePeriod
  };
