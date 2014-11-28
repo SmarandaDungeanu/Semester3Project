@@ -125,6 +125,7 @@ router.get('/semesters/:semId', function(req,res){
 router.get('/semesters/class/:clsId', function(req,res){
     data.getClassById(req.params.clsId, function(err, cls){
         if(err){
+            console.log(err);
             return err;
         }
         data.getSemestersOfClass(cls, function(err, semesters){

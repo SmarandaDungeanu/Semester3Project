@@ -64,12 +64,49 @@ angular.module('myAppRename.controllers', [ 'ui.bootstrap']).
     .controller('View3Ctrl', function ($scope, $http) {
 
 
+        //$http({
+        //  method: 'GET',
+        //  url: '/semesters'
+        //}).
+        //    success(function (data, status, headers, config) {
+        //      $scope.semesters = data;
+        //      $scope.error = null;
+        //    }).
+        //    error(function (data, status, headers, config) {
+        //      if (status == 401) {
+        //        $scope.error = "You are not authenticated to request these data";
+        //        return;
+        //      }
+        //      $scope.error = data;
+        //    });
+
+
+      $scope.getSemestersOfClass = function(clsId){
         $http({
           method: 'GET',
-          url: '/semesters'
+          url: '/semesters/class/'+clsId
         }).
             success(function (data, status, headers, config) {
               $scope.semesters = data;
+              $scope.error = null;
+              $scope.clicked = true;
+            }).
+            error(function (data, status, headers, config) {
+              if (status == 401) {
+                $scope.error = "You are not authenticated to request these data";
+                return;
+              }
+              $scope.error = data;
+            });
+      };
+
+      $scope.getAllClasses = function(){
+        $http({
+          method: 'GET',
+          url: '/classes'
+        }).
+            success(function (data, status, headers, config) {
+              $scope.classes = data;
               $scope.error = null;
             }).
             error(function (data, status, headers, config) {
@@ -79,6 +116,8 @@ angular.module('myAppRename.controllers', [ 'ui.bootstrap']).
               }
               $scope.error = data;
             });
+      };
+
       $scope.getPeriodsOfSemester = function(semester){
         $http({
           method: 'GET',
@@ -92,19 +131,24 @@ angular.module('myAppRename.controllers', [ 'ui.bootstrap']).
               $scope.error = data;
             });
       };
+      $scope.createNewSemester = function(){
+        $scope.showSemForm = true;
+        $scope.showPerForm = false;
+        $scope.showClsForm = false;
 
-      $scope.saveSemester = function(){
-        $http({
-          method: 'POST',
-          url: '/semester/'+$scope.newSem.name+'/'+$scope.newSem.startingDate+'/'+$scope.newSem.endingDate
-        }).
-            success(function (data, status, headers, config){
-              $scope.semesters.push(data);
-            })
-            .error(function (data, status, headers, config) {
-              $scope.error = data;
-            });
-        $scope.newSem = {};
+          $scope.saveSemester = function(){
+            $http({
+              method: 'POST',
+              url: '/semester/'+$scope.newSem.name+'/'+$scope.newSem.startingDate+'/'+$scope.newSem.endingDate
+            }).
+                success(function (data, status, headers, config){
+                  $scope.semesters.push(data);
+                })
+                .error(function (data, status, headers, config) {
+                  $scope.error = data;
+                });
+            $scope.newSem = {};
+          };
       };
 
       $scope.createNewPeriod = function(semId){
@@ -128,27 +172,24 @@ angular.module('myAppRename.controllers', [ 'ui.bootstrap']).
         }
       };
 
-      $scope.getAllClasses = function(){
-        $http({
-          method: 'GET',
-          url: '/classes'
-        }).
-            success(function (data, status, headers, config) {
-              $scope.classes = data;
-              $scope.error = null;
-            }).
-            error(function (data, status, headers, config) {
-              if (status == 401) {
-                $scope.error = "You are not authenticated to request these data";
-                return;
-              }
-              $scope.error = data;
-            });
+      $scope.createNewClass = function(){
+        $scope.showSemForm = false;
+        $scope.showPerForm = false;
+        $scope.showClsForm = true;
       };
 
 
-      $scope.showSemForm = true;
+      $scope.cancel = function(){
+        $scope.showSemForm = false;
+        $scope.showPerForm = false;
+        $scope.showClsForm = false;
+      };
+
+
+      $scope.showSemForm = false;
       $scope.showPerForm = false;
+      $scope.showClsForm = false;
+      $scope.clicked = false;
 
     });
 

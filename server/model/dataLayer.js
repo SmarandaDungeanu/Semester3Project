@@ -144,6 +144,7 @@ function getSemestersOfClass(cls, callback){
     });
     model.SemesterModel.find({'_id': {$in: sIds}}, function(err, data){
         if (err) {
+            console.log(err);
             return callback(err);
         }
         callback(null,data);
