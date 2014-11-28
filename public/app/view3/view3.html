@@ -11,7 +11,7 @@
   </ul>
 
 </div>
-<div class="col-md-9" >
+<div class="col-md-9" id="sems">
   <accordion close-others="true">
     <accordion-group heading={{semester.name}}   ng-click="getPeriodsOfSemester(semester)" ng-repeat="semester in semesters | orderBy:'name':reverse">
                 <table class="table">
@@ -37,7 +37,7 @@
 </div>
 
   <!--NEW SEMESTER FORM-->
-<div class="col-md-3" style="border: thin lightblue solid; border-radius: 5px;padding: 1em;" class="form-group" ng-show="showSemForm">
+<div class="col-md-3" style="border: thin lightblue solid; border-radius: 5px;padding: 1em;margin-top: 20px" class="form-group" ng-show="showSemForm">
   <form class="form-horizontal">
     <fieldset>
       <legend>New Semester - for class {{currentClassName}}</legend>
@@ -59,7 +59,7 @@
 </div>
 
   <!--NEW PERIOD FORM-->
-<div class="col-md-3" style="border: thin lightblue solid; border-radius: 5px;padding: 1em;" class="form-group" ng-show="showPerForm">
+<div class="col-md-3" style="border: thin lightblue solid; border-radius: 5px;padding: 1em;margin-top: 20px" class="form-group" ng-show="showPerForm">
   <form class="form-horizontal" >
     <fieldset>
       <legend>New Period - for {{currentSemesterName}}</legend>
@@ -81,7 +81,7 @@
   </form>
 </div>
   <!--NEW CLASS FORM-->
-<div class="col-md-3" style="border: thin lightblue solid; border-radius: 5px;padding: 1em;" class="form-group" ng-show="showClsForm">
+<div class="col-md-3" style="border: thin lightblue solid; border-radius: 5px;padding: 1em;margin-top: 20px" class="form-group" ng-show="showClsForm">
   <form class="form-horizontal" >
     <fieldset>
       <legend>New Class</legend>
