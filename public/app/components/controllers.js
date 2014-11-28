@@ -81,12 +81,14 @@ angular.module('myAppRename.controllers', [ 'ui.bootstrap']).
         //    });
 
 
-      $scope.getSemestersOfClass = function(clsId){
+      $scope.getSemestersOfClass = function(cls){
         $http({
           method: 'GET',
-          url: '/semesters/class/'+clsId
+          url: '/semesters/class/'+cls._id
         }).
             success(function (data, status, headers, config) {
+              $scope.currentClassId = cls._id;
+              $scope.currentClassName = cls.name;
               $scope.semesters = data;
               $scope.error = null;
               $scope.clicked = true;
@@ -139,7 +141,7 @@ angular.module('myAppRename.controllers', [ 'ui.bootstrap']).
           $scope.saveSemester = function(){
             $http({
               method: 'POST',
-              url: '/semester/'+$scope.newSem.name+'/'+$scope.newSem.startingDate+'/'+$scope.newSem.endingDate
+              url: '/semester/'+$scope.currentClassId+'/'+$scope.newSem.name+'/'+$scope.newSem.startingDate+'/'+$scope.newSem.endingDate
             }).
                 success(function (data, status, headers, config){
                   $scope.semesters.push(data);
@@ -151,19 +153,19 @@ angular.module('myAppRename.controllers', [ 'ui.bootstrap']).
           };
       };
 
-      $scope.createNewPeriod = function(semId){
-        $scope.showPerForm = true;
+      $scope.createNewPeriod = function(semester){
         $scope.showSemForm = false;
-
+        $scope.showPerForm = true;
+        $scope.showClsForm = false;
+        $scope.currentSemesterName = semester.name;
         $scope.addPeriodForSemester = function(){
           $http({
             method: 'POST',
-            url: '/period/'+semId+'/'+$scope.newPer.name+'/'+$scope.newPer.maxPoints+'/'+$scope.newPer.reqPoints
+            url: '/period/'+semester._id+'/'+$scope.newPer.name+'/'+$scope.newPer.maxPoints+'/'+$scope.newPer.reqPoints
           }).
               success(function (data, status, headers, config){
+
                 $scope.currentPeriods.push(data);
-                $scope.showSemForm = true;
-                $scope.showPerForm = false;
               })
               .error(function (data, status, headers, config) {
                 $scope.error = data;
@@ -176,6 +178,19 @@ angular.module('myAppRename.controllers', [ 'ui.bootstrap']).
         $scope.showSemForm = false;
         $scope.showPerForm = false;
         $scope.showClsForm = true;
+        $scope.saveClass = function(){
+          $http({
+            method: 'POST',
+            url: '/class/'+$scope.newCls.name
+          }).
+              success(function (data, status, headers, config){
+              //  $scope.classes.push(data);
+              })
+              .error(function (data, status, headers, config) {
+                $scope.error = data;
+              });
+          $scope.newCls = {};
+        };
       };
 
 

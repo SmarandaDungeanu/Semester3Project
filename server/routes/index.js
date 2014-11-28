@@ -151,7 +151,19 @@ router.get('/periods/semester/:semId', function(req,res){
     })
 });
 
-router.post('/semester/:name/:startingDate/:endingDate', function(req, res){
+router.post('/class/:name', function(req, res){
+    var cls = {
+        name: req.params.name
+    };
+    data.createNewClass(cls, function(err, semester){
+        if(err){
+            return err;
+        }
+        res.end(JSON.stringify(cls));
+    })
+});
+
+router.post('/semester/:clsId/:name/:startingDate/:endingDate', function(req, res){
     var semester = {
         name: req.params.name,
         startingDate: req.params.startingDate,
@@ -161,7 +173,18 @@ router.post('/semester/:name/:startingDate/:endingDate', function(req, res){
         if(err){
             return err;
         }
-        res.end(JSON.stringify(semester));
+        data.getClassById(req.params.clsId, function(err, cls){
+            if(err){
+                return err;
+            }
+            cls.semesterIds.push({sid: semester._id});
+            data.updateClass(cls.toJSON(), function(err, updatedClass){
+                if(err){
+                    return err;
+                }
+                res.end(JSON.stringify(semester));
+            })
+        });
     })
 });
 
