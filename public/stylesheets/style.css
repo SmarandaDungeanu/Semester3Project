@@ -3,7 +3,21 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
+
+
+#tasks{
+  padding-top: 20px;
+}
+
+
+#sems{
+  padding-top: 20px;
+}
+
+
 a {
   color: #00B7FF;
 }
+
+
 

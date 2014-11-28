@@ -1,6 +1,6 @@
-<div class="col-md-9" >
+<div class="col-md-9" id="tasks" >
     <accordion close-others="true">
-        <accordion-group heading={{task.name}}   ng-click="" ng-repeat="task in tasks | orderBy:'name':reverse">
+        <accordion-group  heading={{task.name}}   ng-click="" ng-repeat="task in tasks | orderBy:'name':reverse">
             <table class="table">
                 <tbody>
                 <tr>
@@ -18,7 +18,7 @@
     <button class="btn btn-primary" ng-click="createNewTask()">Add More Tasks</button>
 </div>
 <!--NEW TASK FORM-->
-<div class="col-md-3" style="border: thin lightblue solid; border-radius: 5px;padding: 1em;" class="form-group" ng-show="showTaskForm">
+<div class="col-md-3" style="border: thin lightblue solid; border-radius: 5px;padding: 1em;margin-top: 20px" class="form-group" ng-show="showTaskForm">
     <form class="form-horizontal" >
         <fieldset>
             <legend>New Task - for {{currentPeriodName}}</legend>
