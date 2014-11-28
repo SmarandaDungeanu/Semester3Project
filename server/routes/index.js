@@ -122,6 +122,15 @@ router.get('/semesters/:semId', function(req,res){
     })
 });
 
+router.get('/periods/:perId', function(req,res){
+    data.getPeriodById(req.params.perId, function(err, data){
+        if(err){
+            return err;
+        }
+        res.end(JSON.stringify(data));
+    })
+});
+
 router.get('/semesters/class/:clsId', function(req,res){
     data.getClassById(req.params.clsId, function(err, cls){
         if(err){
@@ -147,6 +156,20 @@ router.get('/periods/semester/:semId', function(req,res){
                 return err;
             }
             res.end(JSON.stringify(periods));
+        });
+    })
+});
+
+router.get('/tasks/period/:perId', function(req,res){
+    data.getPeriodById(req.params.perId, function(err, period){
+        if(err){
+            return err;
+        }
+        data.getTasksOfPeriod(period, function(err, tasks){
+            if(err){
+                return err;
+            }
+            res.end(JSON.stringify(tasks));
         });
     })
 });
@@ -209,6 +232,31 @@ router.post('/period/:semId/:name/:maxPoints/:reqPoints', function(req, res){
                     return err;
                 }
                 res.end(JSON.stringify(period));
+            })
+        })
+    })
+});
+
+router.post('/task/:perId/:name/:desc/:maxPoints', function(req, res){
+    var task = {
+        name: req.params.name,
+        description: req.params.desc,
+        maxPoints: req.params.maxPoints
+    };
+    data.createNewTask(task, function(err, task){
+        if(err){
+            return err;
+        }
+        data.getPeriodById(req.params.perId, function(err, period){
+            if(err){
+                return err;
+            }
+            period.taskIds.push({tid: task._id});
+            data.updatePeriod(period.toJSON(), function(err, updatedPeriod){
+                if(err){
+                    return err;
+                }
+                res.end(JSON.stringify(task));
             })
         })
     })
