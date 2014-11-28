@@ -63,24 +63,6 @@ angular.module('myAppRename.controllers', [ 'ui.bootstrap']).
   })
     .controller('View3Ctrl', function ($scope, $http) {
 
-
-        //$http({
-        //  method: 'GET',
-        //  url: '/semesters'
-        //}).
-        //    success(function (data, status, headers, config) {
-        //      $scope.semesters = data;
-        //      $scope.error = null;
-        //    }).
-        //    error(function (data, status, headers, config) {
-        //      if (status == 401) {
-        //        $scope.error = "You are not authenticated to request these data";
-        //        return;
-        //      }
-        //      $scope.error = data;
-        //    });
-
-
       $scope.getSemestersOfClass = function(cls){
         $http({
           method: 'GET',
@@ -206,6 +188,55 @@ angular.module('myAppRename.controllers', [ 'ui.bootstrap']).
       $scope.showClsForm = false;
       $scope.clicked = false;
 
+    })
+    .controller('TasksCtrl', function($scope, $http, $location){
+        $http({
+            method: 'GET',
+            url: 'tasks/period/'+ $location.path().split("/")[2]
+        }).
+            success(function (data, status, headers, config){
+                $scope.tasks = data;
+                $scope.currentPeriodId = $location.path().split("/")[2];
+            })
+            .error(function (data, status, headers, config) {
+                $scope.error = data;
+            });
+        $scope.createNewTask = function() {
+            $scope.showTaskForm = true;
+            $scope.getCurrentPeriodName();
+            $scope.addTaskForPeriod = function () {
+                $http({
+                    method: 'POST',
+                    url: '/task/' + $scope.currentPeriodId + '/' + $scope.newTask.name + '/' + $scope.newTask.description + '/' + $scope.newTask.maxPoints
+                }).
+                    success(function (data, status, headers, config) {
+                        $scope.tasks.push(data);
+                    })
+                    .error(function (data, status, headers, config) {
+                        $scope.error = data;
+                    });
+                $scope.newTask = {};
+            };
+        };
+
+        $scope.getCurrentPeriodName = function(){
+            $http({
+                method: 'GET',
+                url: 'periods/'+$scope.currentPeriodId
+            }).
+                success(function (data, status, headers, config){
+                    $scope.currentPeriodName = data.name;
+                })
+                .error(function (data, status, headers, config) {
+                    $scope.error = data;
+                });
+        };
+
+        $scope.cancel = function(){
+            $scope.showTaskForm = false;
+        };
+
+        $scope.showTaskForm = false;
     });
 
 
