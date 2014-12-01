@@ -22,12 +22,12 @@
                   </thead>
                   <tbody  ng-repeat="period in currentPeriods">
                   <tr>
-                    <td><a href="#/view3/{{period._id}}">{{period.name}}</a></td>
+                    <td>{{period.name}}</td><td><a href="#/view3/{{period._id}}">See tasks</a></td><td><a href="#/view3/students/{{period._id}}">See students</a></td>
                   </tr>
                   </tbody>
                   <tfoot>
                     <tr>
-                      <td ng-click="createNewPeriod(semester)"><a href="">Add more periods</a></td>
+                      <td ng-click="createNewPeriod(semester)"><a href="">Add more periods</a></td><td></td><td></td>
                     </tr>
                   </tfoot>
                 </table>

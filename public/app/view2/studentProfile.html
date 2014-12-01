@@ -1,0 +1,32 @@
+<h1>{{student.fName}} {{student.lName}}</h1>
+<div class="col-md-9">
+<table class="table">
+    <tbody>
+        <tr>
+            <th>Email</th><td>{{student.email}}</td>
+        </tr>
+        <tr>
+            <th>Username</th><td>{{student.username}}</td>
+        </tr>
+        <tr>
+            <th>Total Achieved Points</th><td>{{student.totalAchievedPoints}}</td>
+        </tr>
+    </tbody>
+</table>
+<accordion close-others="true">
+    <accordion-group heading={{sem.name}} ng-click="getPeriods()" ng-repeat="sem in semesters | orderBy:'name':reverse">
+            <table class="table">
+                <tbody ng-repeat="period in periods">
+                <tr>
+                    <th ng-init="getTasks(period._id)">{{period.name}}, Points: {{achievedPointsForPeriod}}/{{maxPointsForPeriod}} </th>
+                </tr>
+                    <tbody ng-repeat="task in tasks" ng-init="getPointsForPeriod()">
+                        <tr>
+                            <td ng-init="getAchievedPointsForTask(task._id)">Task {{task.name}}, Points: {{achievedPointsForTask}}/{{task.maxPoints}}</td>
+                        </tr>
+                    <tbody>
+                </tbody>
+            </table>
+    </accordion-group>
+</accordion>
+</div>

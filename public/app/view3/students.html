@@ -1,0 +1,52 @@
+<div class="alert alert-danger" role="alert" ng-show="error">{{error}}</div>
+
+<div class="col-md-9" id="stud">
+    <accordion close-others="true">
+        <accordion-group heading="{{student.fName}} {{student.lName}}" ng-repeat="student in students | orderBy:'name':reverse">
+            <table class="table">
+                <thead>
+                <tr>
+                    <td><b>Details</b></td>
+                </tr>
+                </thead>
+                <tr>
+                    <td>Email</td><td>{{student.email}}</td>
+                </tr>
+                <tr>
+                    <td>Username</td><td>{{student.username}}</td>
+                </tr>
+                <tfoot>
+                <tr>
+                    <td ng-click=""><a href="#/view2/{{student._id}}">See profile</a></td><td></td>
+                </tr>
+                </tfoot>
+            </table>
+        </accordion-group>
+    </accordion>
+    <button class="btn btn-primary" ng-click="createNewStudent()">Add More Students</button>
+</div>
+
+ <!--NEW STUDENT FORM-->
+<div class="col-md-3" style="border: thin lightblue solid; border-radius: 5px;padding: 1em;margin-top: 20px" class="form-group" ng-show="showStudentForm">
+    <form class="form-horizontal">
+        <fieldset>
+            <legend>New Student</legend>
+            <label for="fname">First name: </label>
+            <input type="text" ng-model="newStudent.fName" id="fname" placeholder="First name" class="form-control">
+
+            <label for="lname">Last name: </label>
+            <input type="text" ng-model="newStudent.lName" id="lname" placeholder="Last name" class="form-control">
+
+            <label for="email">Email: </label>
+            <input type="email" ng-model="newStudent.email" id="email" placeholder="Email" class="form-control">
+
+            <label for="username">Username: </label>
+            <input type="text" ng-model="newStudent.username" id="username" placeholder="New username" class="form-control">
+
+            </br>
+            <button class="btn btn-primary" ng-click="addStudentForPeriod()">Save Student</button>
+            <button class="btn btn-primary" ng-click="cancel()">Cancel</button>
+
+        </fieldset>
+    </form>
+</div>

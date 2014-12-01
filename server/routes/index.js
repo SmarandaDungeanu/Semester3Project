@@ -97,10 +97,121 @@ router.get('/classes', function(req,res){
 router.get('/classes/:classId', function(req,res){
     data.getClassById(req.params.classId, function(err, classs){
         if(err){
-            console.log(err);
             return err;
         }
         res.end(JSON.stringify(classs));
+    })
+});
+
+//get classes for student
+router.get('/classes/student/:studId', function(req, res){
+    var classes = [];
+    data.getPeriodsForStudent(req.params.studId, function(err, periods){
+        if(err){
+            return err;
+        }
+        periods.forEach(function(period){
+            data.getSemesterForPeriod(period._id, function(err, semester){
+                if(err){
+                    return err;
+                }
+                data.getClassForSemester(semester._id, function(err, cls){
+                    if(err){
+                        return err;
+                    }
+                    classes.push(cls);
+                    if(periods.length===classes.length)
+                    {
+                        res.end(JSON.stringify(classes));
+                    }
+                })
+            })
+        });
+    });
+});
+
+//get semesters for student
+router.get('/semesters/student/:studId', function(req, res){
+    var semesters = [];
+    data.getPeriodsForStudent(req.params.studId, function(err, periods){
+        if(err){
+            return err;
+        }
+        periods.forEach(function(period){
+            data.getSemesterForPeriod(period._id, function(err, semester){
+                if(err){
+                    return err;
+                }
+                semesters.push(semester);
+                if(periods.length===semesters.length)
+                {
+                    res.end(JSON.stringify(semesters));
+                }
+            })
+        });
+    })
+});
+
+//get periods for student
+router.get('/periods/student/:studId', function(req, res){
+    data.getPeriodsForStudent(req.params.studId, function(err, periods){
+        if(err){
+            return err;
+        }
+        res.end(JSON.stringify(periods));
+    })
+});
+
+//get tasks for student of a specific period
+router.get('/tasks/period/student/:perId/:studId', function(req, res){
+    data.getStudentById(req.params.studId, function(err, student){
+        if(err){
+            return err;
+        }
+        data.getPeriodById(req.params.perId, function(err, period){
+            if(err){
+                return err;
+            }
+            data.getTasksOfPeriodForStudent(period, student, function(err, tasks){
+                if(err){
+                    return err;
+                }
+                res.end(JSON.stringify(tasks));
+            })
+        })
+    });
+});
+
+router.get('/students', function(req,res){
+    data.getAllStudents(function(err, students){
+        if(err){
+            return err;
+        }
+        res.end(JSON.stringify(students));
+    })
+});
+
+router.get('/students/:studId', function(req,res){
+    data.getStudentById(req.params.studId, function(err, student){
+        if(err){
+            return err;
+        }
+        res.end(JSON.stringify(student));
+    })
+});
+
+router.get('/students/period/:perId', function(req,res){
+    data.getPeriodById(req.params.perId, function(err, period){
+        if(err){
+            return err;
+        }
+        console.log("heyyya");
+        data.getStudentsOfPeriod(period, function(err, students){
+            if(err){
+                return err;
+            }
+            res.end(JSON.stringify(students));
+        })
     })
 });
 
@@ -260,6 +371,32 @@ router.post('/task/:perId/:name/:desc/:maxPoints', function(req, res){
             })
         })
     })
+});
+
+router.post('/student/:perId/:fName/:lName/:email/:username', function(req,res){
+   var student = {
+       fName: req.params.fName,
+       lName: req.params.lName,
+       email: req.params.email,
+       username: req.params.username
+   };
+   data.createNewStudent(student, function(err, student){
+       if(err){
+           return err;
+       }
+       data.getPeriodById(req.params.perId, function(err, period){
+           if(err){
+               return err;
+           }
+           period.studentIds.push({sid: student._id});
+           data.updatePeriod(period.toJSON(), function(err, updatedPeriod){
+               if(err){
+                   return err;
+               }
+               res.end(JSON.stringify(student));
+           })
+       })
+   })
 });
 
 module.exports = router;
