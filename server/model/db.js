@@ -18,85 +18,85 @@ var dbURI;
 
 //This is set by the backend tests
 if( typeof global.TEST_DATABASE != "undefined" ) {
-  dbURI = global.TEST_DATABASE;
+    dbURI = global.TEST_DATABASE;
 }
 else{
-  dbURI = 'mongodb://team:team@ds053190.mongolab.com:53190/sem3project';
+    dbURI = 'mongodb://team:team@ds053190.mongolab.com:53190/sem3project';
 }
 
 mongoose.connect(dbURI);
 
 mongoose.connection.on('connected', function () {
-  console.log('Mongoose connected to ' + dbURI);
+    console.log('Mongoose connected to ' + dbURI);
 });
 
 mongoose.connection.on('error',function (err) {
-  global.mongo_error = "Not Connected to the Database";
-  console.log('Mongoose connection error: ' + err);
+    global.mongo_error = "Not Connected to the Database";
+    console.log('Mongoose connection error: ' + err);
 });
 
 mongoose.connection.on('disconnected', function () {
-  console.log('Mongoose disconnected');
+    console.log('Mongoose disconnected');
 });
 
 process.on('SIGINT', function() {
-  mongoose.connection.close(function () {
-    console.log('Mongoose disconnected through app termination');
-    process.exit(0);
-  });
+    mongoose.connection.close(function () {
+        console.log('Mongoose disconnected through app termination');
+        process.exit(0);
+    });
 });
 
 var teacherSchema = mongoose.Schema({
-      fName: {type: String, index: true},
-      lName: {type: String, index: true},
-      email: {type: String},
-      username: {type: String},
-      classIds: [{cid: {type: String}}]},
+        fName: {type: String, index: true},
+        lName: {type: String, index: true},
+        email: {type: String},
+        username: {type: String},
+        classIds: [{cid: {type: String, ref: 'class'}}]},
 
     { collection: 'teacher' }
 );
 
 var classSchema = mongoose.Schema({
-      name: { type: String, index: true},
-      semesterIds: [{sid: {type: String}}]},
+        name: { type: String, index: true},
+        semesterIds: [{sid: {type: String, ref: 'semester'}}]},
 
     { collection: 'class' }
 );
 
 var semesterSchema = mongoose.Schema({
-      name: { type: String, index: true},
-      startingDate: {type: Date},
-      endingDate: {type: Date},
-      periodIds: [{pid: {type: String}}]},
+        name: { type: String, index: true},
+        startingDate: {type: Date},
+        endingDate: {type: Date},
+        periodIds: [{pid: {type: String, ref: 'period'}}]},
 
     { collection: 'semester' }
 );
 
 var periodSchema = mongoose.Schema({
-      name: { type: String, index: true},
-      maxPoints: {type: Number},
-      reqPoints: {type: Number},
-      taskIds: [{tid: {type: String}}],
-      studentIds: [{sid: {type: String}}]},
+        name: { type: String, index: true},
+        maxPoints: {type: Number},
+        reqPoints: {type: Number},
+        taskIds: [{tid: {type: String}}],
+        studentIds: [{sid: {type: String}}]},
 
     { collection: 'period' }
 );
 
 var studentSchema = mongoose.Schema({
-      fName: {type: String, index: true},
-      lName: {type: String, index: true},
-      email: {type: String},
-      username: {type: String},
-      totalAchievedPoints: {type: Number},
-      doneTasks: [{taskId: {type: String}, achievedPoints: {type: Number}}]},
+        fName: {type: String, index: true},
+        lName: {type: String, index: true},
+        email: {type: String},
+        username: {type: String},
+        totalAchievedPoints: {type: Number},
+        doneTasks: [{taskId: {type: String}, achievedPoints: {type: Number}}]},
 
     { collection: 'student' }
 );
 
 var taskSchema = mongoose.Schema({
-      name: {type: String, index: true},
-      description: {type: String},
-      maxPoints: {type: Number}},
+        name: {type: String, index: true},
+        description: {type: String},
+        maxPoints: {type: Number}},
 
     { collection: 'task' }
 );

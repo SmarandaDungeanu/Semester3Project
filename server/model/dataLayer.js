@@ -94,6 +94,23 @@ function getTasksOfPeriod(period, callback){
     });
 }
 
+function getTasksOfPeriodForStudent(period, student, callback){
+    var doneTasks = [];
+    student.doneTasks.forEach(function(sTask){
+        period.taskIds.forEach(function(pTask){
+           if(sTask.taskId==pTask.tid){
+               doneTasks.push(sTask.taskId);
+           }
+        });
+    });
+    model.TaskModel.find({'_id': {$in: doneTasks}}, function(err, data){
+        if (err) {
+            return callback(err);
+        }
+        callback(null,data);
+    })
+}
+
 function getPeriodById(perId, callback){
     model.PeriodModel.findById(perId,function(err, data){
         if (err) {
@@ -166,6 +183,16 @@ function createNewPeriod(period, callback) {
     });
 }
 
+
+function createNewStudent(student, callback) {
+    model.StudentModel.create(student, function(err, data){
+        if (err) {
+            return callback(err);
+        }
+        callback(null,data);
+    });
+}
+
 function getSemestersOfClass(cls, callback){
     var sIds = [];
     cls.semesterIds.forEach(function(semesterId){
@@ -176,6 +203,70 @@ function getSemestersOfClass(cls, callback){
             return callback(err);
         }
         callback(null,data);
+    });
+}
+
+function getAllStudents(callback){
+    model.StudentModel.find(function(err, data){
+        if (err) {
+            return callback(err);
+        }
+        callback(null,data);
+    });
+}
+
+function getStudentById(studId, callback){
+    model.StudentModel.findById(studId, function(err, data){
+        if (err) {
+            return callback(err);
+        }
+        callback(null,data);
+    });
+}
+
+function getStudentsOfPeriod(period, callback){
+    var sId = [];
+    period.studentIds.forEach(function(studentId){
+        sId.push(studentId.sid)
+    });
+    model.StudentModel.find({'_id':{$in: sId}}, function(err, data){
+        callback(null, data);
+    })
+}
+
+function getPeriodsForStudent(studId, callback){
+    model.PeriodModel.find({'studentIds.sid': studId}, function(err, period){
+        if(err){
+            return callback(err);
+        }
+        callback(null, period);
+    });
+}
+
+function getSemesterForPeriod(perId, callback){
+    model.SemesterModel.findOne({'periodIds.pid': perId}, function(err, semester) {
+        if (err) {
+            return callback(err);
+        }
+        callback(null, semester);
+    });
+}
+
+function getClassForSemester(semId, callback){
+    model.ClassModel.findOne({'semesterIds.sid': semId}, function(err, classs){
+        if(err){
+            return callback(err);
+        }
+        callback(null, classs);
+    });
+}
+
+function getPeriodForTask(taskId, callback){
+    model.PeriodModel.findOne({'taskIds.tid': taskId}, function(err, period){
+        if(err){
+            return callback(err);
+        }
+        callback(null, period);
     });
 }
 
@@ -199,6 +290,15 @@ function getSemestersOfClass(cls, callback){
      getTasksOfPeriod: getTasksOfPeriod,
      getPeriodById: getPeriodById,
      createNewTask: createNewTask,
-     updatePeriod: updatePeriod
+     updatePeriod: updatePeriod,
+     getAllStudents: getAllStudents,
+     getStudentById: getStudentById,
+     getPeriodsForStudent: getPeriodsForStudent,
+     getSemesterForPeriod: getSemesterForPeriod,
+     getClassForSemester: getClassForSemester,
+     getPeriodForTask: getPeriodForTask,
+     getTasksOfPeriodForStudent: getTasksOfPeriodForStudent,
+     getStudentsOfPeriod: getStudentsOfPeriod,
+     createNewStudent: createNewStudent
     // savePeriod: savePeriod
  };

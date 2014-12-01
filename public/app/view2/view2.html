@@ -1,11 +1,27 @@
 <div class="alert alert-danger" role="alert" ng-show="error">{{error}}</div>
-<p>This is the partial for view 2.</p>
-<p style="color: darkgreen">Partial (view2.html) is located in the folder for this view (app/view2)</p>
-<br/>
-<p style="color: #105cb6">
 
-  {{info.msg}}
-</p>
-
-
-
+<div class="col-md-9" id="stud">
+  <accordion close-others="true">
+    <accordion-group heading="{{student.fName}} {{student.lName}}" ng-click="getClassesForStudent(student._id)" ng-repeat="student in students | orderBy:'name':reverse">
+      <table class="table">
+        <thead>
+        <tr>
+          <td><b>Details</b></td>
+        </tr>
+        </thead>
+        <tr>
+          <td>Email</td><td>{{student.email}}</td>
+        </tr>
+        <tr ng-repeat="cls in classes">
+          <td>Class</td><td>{{cls.name}}</td>
+        </tr>
+        <tfoot>
+        <tr>
+          <td ng-click=""><a href="#/view2/{{student._id}}">See profile</a></td><td></td>
+        </tr>
+        </tfoot>
+      </table>
+    </accordion-group>
+  </accordion>
+  <button class="btn btn-primary" ng-click="createNewSemester()" ng-show="clicked">Add More Semesters</button>
+</div>
