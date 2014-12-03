@@ -205,7 +205,6 @@ router.get('/students/period/:perId', function(req,res){
         if(err){
             return err;
         }
-        console.log("heyyya");
         data.getStudentsOfPeriod(period, function(err, students){
             if(err){
                 return err;
@@ -397,6 +396,77 @@ router.post('/student/:perId/:fName/:lName/:email/:username', function(req,res){
            })
        })
    })
+});
+//assign task to all students in period when adding a new task
+router.put("/tasks/:perId/:taskId",function(req, res){
+   data.getPeriodById(req.params.perId, function(err, period){
+       if(err){
+           return err;
+       }
+       period.studentIds.forEach(function(studId){
+           data.getStudentById(studId.sid, function(err, student){
+               if(err){
+                   return err;
+               }
+               student.doneTasks.push({taskId: req.params.taskId, achievedPoints: '0'});
+               data.updateStudent(student.toJSON(), function(err, updatedStudent){
+                   if(err){
+                       return err;
+                   }
+                   res.write(updatedStudent.fName+" "+updatedStudent.lName);
+               })
+           })
+       });
+       res.end();
+   })
+});
+
+//assign all tasks from period to student when adding a new student
+router.put('/students/:perId/:studId', function(req, res){
+    data.getPeriodById(req.params.perId, function(err, period){
+        if(err){
+            return err;
+        }
+        data.getStudentById(req.params.studId, function(err, student){
+            if(err){
+                return err;
+            }
+            period.taskIds.forEach(function(taskId){
+                if(err){
+                    return err;
+                }
+                student.doneTasks.push({taskId: taskId.tid, achievedPoints: '0'});
+            });
+            data.updateStudent(student.toJSON(), function(err, updatedStudent){
+                if(err){
+                    return err;
+                }
+                res.end(JSON.stringify(updatedStudent));
+            })
+        });
+    })
+});
+
+//update student's achieved points for a task
+router.put('/student/:studId/:taskId/:points', function(req, res){
+    data.getStudentById(req.params.studId, function(err, student){
+        if(err){
+            return err;
+        }
+        student.doneTasks.forEach(function(doneTask){
+            if(doneTask.taskId === req.params.taskId){
+                doneTask.achievedPoints = req.params.points;
+            }
+            res.write(" ");
+        });
+        data.updateStudent(student.toJSON(), function(err, updatedStudent){
+            if(err){
+                console.log("error "+ err);
+                return err;
+            }
+            res.end(JSON.stringify(updatedStudent));
+        })
+    })
 });
 
 module.exports = router;

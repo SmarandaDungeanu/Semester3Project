@@ -165,6 +165,17 @@ angular.module('myAppRename.view3', ['ngRoute'])
                 }).
                     success(function (data, status, headers, config) {
                         $scope.tasks.push(data);
+                        //assign the new task to all the students in this period
+                        $http({
+                            method: 'PUT',
+                            url: '/tasks/'+$scope.currentPeriodId+'/'+data._id
+                        }).
+                            success(function (data, status, headers, config) {
+                                console.log("task added and assigned")
+                            })
+                            .error(function (data, status, headers, config) {
+                                $scope.error = data;
+                            });
                     })
                     .error(function (data, status, headers, config) {
                         $scope.error = data;
@@ -218,6 +229,16 @@ angular.module('myAppRename.view3', ['ngRoute'])
                     url: '/student/' + $scope.currentPeriodId + '/' + $scope.newStudent.fName + '/' + $scope.newStudent.lName + '/' + $scope.newStudent.email + '/' + $scope.newStudent.username
                 }).
                     success(function (data, status, headers, config) {
+                        $http({
+                            method: 'PUT',
+                            url: '/students/'+$scope.currentPeriodId+'/'+data._id
+                        }).
+                            success(function (data, status, headers, config) {
+
+                            })
+                            .error(function (data, status, headers, config) {
+                                $scope.error = data;
+                            });
                         $scope.students.push(data);
                     })
                     .error(function (data, status, headers, config) {

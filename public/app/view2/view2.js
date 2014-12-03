@@ -73,8 +73,8 @@ angular.module('myAppRename.view2', ['ngRoute'])
         })
             .success(function (data, status, headers, config) {
               $scope.periods = data;
-
-
+              $scope.maxPointsForPeriod = [];
+              $scope.achievedPointsForPeriod =[];
             }).
             error(function (data, status, headers, config) {
               $scope.error = data;
@@ -88,30 +88,61 @@ angular.module('myAppRename.view2', ['ngRoute'])
           url: '/tasks/period/student/'+perId+'/'+$scope.student._id
         })
             .success(function (data, status, headers, config) {
-              $scope.tasks = data;
-
+              $scope.tasks = [];
+              for(var i=0; i<data.length; i++){
+                $scope.student.doneTasks.forEach(function(task){
+                  if(task.taskId == data[i]._id){
+                    data[i].achievedPointsForTask = task.achievedPoints;
+                    $scope.tasks.push(data[i]);
+                  }
+                })
+              }
             }).
             error(function (data, status, headers, config) {
               $scope.error = data;
             });
       };
 
-      $scope.getAchievedPointsForTask = function(taskId){
-        $scope.student.doneTasks.forEach(function(task){
-          if(task.taskId === taskId){
-            $scope.achievedPointsForTask=task.achievedPoints;
-          }
-        })
+      $scope.getPointsForPeriod = function(){
+        var max = 0;
+        var achieved = 0;
+        $scope.tasks.forEach(function(task){
+          max = max + task.maxPoints;
+          achieved = achieved + task.achievedPointsForTask;
+          });
+        $scope.maxPointsForPeriod.push(max);
+        $scope.achievedPointsForPeriod.push(achieved);
       };
 
-      $scope.getPointsForPeriod = function(){
-        $scope.tasks.forEach(function(task){
-          $scope.maxPointsForPeriod =+ task.maxPoints;
-          $scope.student.doneTasks.forEach(function(stask) {
-            if(stask.taskId === task._id){
-              $scope.achievedPointsForPeriod =+ stask.achievedPoints;
-            }
-          })
-        })
+      $scope.showAssignTasksForm = false;
+
+      $scope.cancel = function(){
+        $scope.showAssignTasksForm = false;
       };
+
+      $scope.editAchievedPoints = function(task){
+        $scope.showAssignTasksForm = true;
+        $scope.newTask = task;
+        $scope.savePoints = function(){
+          $http({
+            method: 'PUT',
+            url: '/student/'+$scope.student._id+'/'+task._id+'/'+$scope.newTask.achievedPoints
+          })
+              .success(function (data, status, headers, config) {
+                //  for(var i= 0; i<$scope.tasks.length; i++){
+                //    if($scope.tasks[i]._id === task._id){
+                //      console.log("bla");
+                //      $scope.tasks.splice(i, 1);
+                //      $scope.tasks.push($scope.newTask);
+                //    }
+                //}
+                  $scope.newTask = {};
+              }).
+              error(function (data, status, headers, config) {
+                $scope.error = data;
+              });
+        };
+      }
+
+
     }]);
