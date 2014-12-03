@@ -1,5 +1,5 @@
 <h1>{{student.fName}} {{student.lName}}</h1>
-<div class="col-md-9">
+<div class="col-md-9" id="tb">
 <table class="table">
     <tbody>
         <tr>
@@ -18,15 +18,39 @@
             <table class="table">
                 <tbody ng-repeat="period in periods">
                 <tr>
-                    <th ng-init="getTasks(period._id)">{{period.name}}, Points: {{achievedPointsForPeriod}}/{{maxPointsForPeriod}} </th>
+                    <!--have to solve this!!!-->
+                    <th ng-init="getTasks(period._id)">{{period.name}}</th><th> Points: {{achievedPointsForPeriod[1]}}/{{maxPointsForPeriod[1]}} </th>
                 </tr>
                     <tbody ng-repeat="task in tasks" ng-init="getPointsForPeriod()">
                         <tr>
-                            <td ng-init="getAchievedPointsForTask(task._id)">Task {{task.name}}, Points: {{achievedPointsForTask}}/{{task.maxPoints}}</td>
+                            <td ng-click="editAchievedPoints(task)"><a href="">Task {{task.name}}</a></td><td> Points: {{task.achievedPointsForTask}}/{{task.maxPoints}}</td>
                         </tr>
                     <tbody>
                 </tbody>
             </table>
     </accordion-group>
 </accordion>
+</div>
+
+<!--ASSIGN POINTS TASKS FORM-->
+<div class="col-md-3" style="border: thin lightblue solid; border-radius: 5px;padding: 1em;margin-top: 20px" class="form-group" ng-show="showAssignTasksForm">
+    <form class="form-horizontal" >
+        <fieldset>
+            <legend>Task {{newTask.name}}</legend>
+
+            <label for="desc"> Task description: </label>
+            <input type="text" ng-readonly="true" ng-value="" ng-model="newTask.description" id="desc" placeholder="Description" class="form-control">
+
+            <label for="maxPoints">Maximum points: </label>
+            <input type="number" ng-readonly="true" ng-value="" ng-model="newTask.maxPoints" id="maxPoints" placeholder="Maximum points" class="form-control">
+
+            <label for="achPoints">Achieved points: </label>
+            <input type="number" ng-model="newTask.achievedPoints" id="achPoints" placeholder="Achieved points" class="form-control">
+
+            </br>
+            <button class="btn btn-primary" ng-click="savePoints()">Save</button>
+            <button class="btn btn-primary" ng-click="cancel()">Cancel</button>
+
+        </fieldset>
+    </form>
 </div>
