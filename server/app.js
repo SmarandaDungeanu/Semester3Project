@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var db = require("./model/db");
 var routes = require('./routes/index');
+var images = require('./routes/images');
 var adminRest = require('./routes/REST_Admin_API');
 var userRest = require('./routes/REST_Users_API');
 
@@ -37,6 +38,7 @@ app.use(express.static(path.join(__dirname, '../public/app')));
 app.use('/', routes);
 app.use('/adminApi', adminRest);
 app.use('/userApi', userRest);
+app.use('/images', images);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

@@ -1,4 +1,5 @@
-<h1>{{student.fName}} {{student.lName}}</h1>
+
+<h1><image src="users/{{student._id}}/avatar.jpg" height="80" width="80"></image> {{student.fName}} {{student.lName}}</h1>
 <div class="col-md-9" id="tb">
 <table class="table">
     <tbody>
@@ -54,3 +55,10 @@
         </fieldset>
     </form>
 </div>
+<!--UPLOAD IMAGE-->
+<DIV class="col-md-3">
+    <form action="{{'/images/'+student._id}}" enctype="multipart/form-data" method="post">
+        <input type="file" name="upload" multiple="multiple"><br>
+        <input type="submit" value="Upload">
+    </form>
+</DIV>

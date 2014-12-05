@@ -129,20 +129,11 @@ angular.module('myAppRename.view2', ['ngRoute'])
             url: '/student/'+$scope.student._id+'/'+task._id+'/'+$scope.newTask.achievedPoints
           })
               .success(function (data, status, headers, config) {
-                //  for(var i= 0; i<$scope.tasks.length; i++){
-                //    if($scope.tasks[i]._id === task._id){
-                //      console.log("bla");
-                //      $scope.tasks.splice(i, 1);
-                //      $scope.tasks.push($scope.newTask);
-                //    }
-                //}
                   $scope.newTask = {};
               }).
               error(function (data, status, headers, config) {
                 $scope.error = data;
               });
         };
-      }
-
-
-    }]);
+      };
+      }]);
