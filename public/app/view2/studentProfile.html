@@ -9,26 +9,24 @@
         <tr>
             <th>Username</th><td>{{student.username}}</td>
         </tr>
-        <tr>
-            <th>Total Achieved Points</th><td>{{student.totalAchievedPoints}}</td>
-        </tr>
     </tbody>
 </table>
 <accordion close-others="true">
-    <accordion-group heading={{sem.name}} ng-click="getPeriods()" ng-repeat="sem in semesters | orderBy:'name':reverse">
+    <accordion-group heading="{{sem.name}} | Achieved points: {{getPointsForSemester(sem).achievedPointsForSemester}} | Maximum points: {{getPointsForSemester(sem).maximumPointsForSemester}} | Required points: {{getPointsForSemester(sem).requiredPointsForSemester}}" ng-repeat="sem in semesters | orderBy:'name':reverse">
+        <div  ng-repeat="period in sem.periods | orderBy:'name':reverse" ng-init="points = getPointsForPeriod(period)">
             <table class="table">
-                <tbody ng-repeat="period in periods">
+                <thead>
+                    <tr>
+                        <th>{{period.name}}</th><td> You have {{ points.achievedPointsForPeriod }} points out of {{ points.maximumPointsForPeriod}}, required: {{period.reqPoints }}</td>
+                    </tr>
+                </thead>
+                <tbody ng-repeat="task in period.tasks | orderBy:'name':reverse">
                 <tr>
-                    <!--have to solve this!!!-->
-                    <th ng-init="getTasks(period._id)">{{period.name}}</th><th> Points: {{achievedPointsForPeriod[1]}}/{{maxPointsForPeriod[1]}} </th>
+                    <td ng-click="editAchievedPoints(task)"><a href="">{{task.name}}</a></td><td>{{task.achievedPointsForTask}}/{{task.maxPoints}}</td>
                 </tr>
-                    <tbody ng-repeat="task in tasks" ng-init="getPointsForPeriod()">
-                        <tr>
-                            <td ng-click="editAchievedPoints(task)"><a href="">Task {{task.name}}</a></td><td> Points: {{task.achievedPointsForTask}}/{{task.maxPoints}}</td>
-                        </tr>
-                    <tbody>
                 </tbody>
             </table>
+        </div>
     </accordion-group>
 </accordion>
 </div>
@@ -56,7 +54,7 @@
     </form>
 </div>
 <!--UPLOAD IMAGE-->
-<DIV class="col-md-3">
+<DIV class="col-md-3" id="upl">
     <form action="{{'/images/'+student._id}}" enctype="multipart/form-data" method="post">
         <input type="file" name="upload" multiple="multiple"><br>
         <input type="submit" value="Upload">
