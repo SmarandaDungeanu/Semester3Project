@@ -15,6 +15,10 @@ angular.module('myAppRename.view3', ['ngRoute'])
           templateUrl: 'app/view3/students.html',
           controller: 'StudentCtrl'
       })
+      .when('/view3/tasks/:periodId/:taskId', {
+          templateUrl: 'app/view3/assignPoints.html',
+          controller: 'PointsController'
+      })
 }])
     .controller('View3Ctrl', function ($scope, $http) {
 
@@ -217,12 +221,15 @@ angular.module('myAppRename.view3', ['ngRoute'])
                 });
         $scope.cancel = function(){
             $scope.showStudentForm = false;
+            $scope.newStudent = {};
         };
 
-        $scope.showStudentkForm = false;
+        $scope.showStudentForm = false;
 
         $scope.createNewStudent = function(){
             $scope.showStudentForm = true;
+            $scope.showDropDown = false;
+            $scope.showNewStud = true;
             $scope.addStudentForPeriod = function(){
                 $http({
                     method: 'POST',
@@ -246,5 +253,110 @@ angular.module('myAppRename.view3', ['ngRoute'])
                     });
                 $scope.newStudent = {};
             }
+        };
+
+    $scope.openStudentsDropdown = function(){
+      $scope.showDropDown = true;
+      $scope.showNewStud = false;
+      $scope.newStudent = {};
+        $http({
+            method: 'GET',
+            url: '/students'
+        })
+            .success(function (data, status, headers, config) {
+                $scope.allStudents = [];
+                var found = false;
+                data.forEach(function(dropdownStudent){
+                    found = false;
+                    $scope.students.forEach(function(student){
+                        if(dropdownStudent._id === student._id){
+                            found = true;
+                        }
+                    });
+                    if(found===false){
+                        $scope.allStudents.push(dropdownStudent);
+                    }
+                });
+                $scope.error = null;
+            }).
+            error(function (data, status, headers, config) {
+                if (status == 401) {
+                    $scope.error = "You are not authenticated to request these data";
+                    return;
+                }
+                $scope.error = data;
+            });
+    };
+    $scope.addExistingStudentForPeriod = function(){
+            $http({
+                method: 'PUT',
+                url: '/add/'+ $scope.currentPeriodId + '/' + $scope.newStudent._id
+            }).
+                success(function (data, status, headers, config) {
+                    $http({
+                        method: 'PUT',
+                        url: '/students/'+$scope.currentPeriodId+'/'+data._id
+                    }).
+                        success(function (data, status, headers, config) {
+                            $scope.students.push(data);
+                        })
+                        .error(function (data, status, headers, config) {
+                            $scope.error = data;
+                        });
+                })
+                .error(function (data, status, headers, config) {
+                    $scope.error = data;
+                });
+        $scope.newStudent = {};
+    }
+    })
+.controller('PointsController', function($scope, $http, $location){
+        $http({
+            method: 'GET',
+            url: '/students/period/'+ $location.path().split("/")[3]
+        }).
+            success(function (data, status, headers, config) {
+                $scope.students = data;
+                $scope.currentPeriodId = $location.path().split("/")[3];
+
+                $http({
+                    method: 'GET',
+                    url: '/students/period/'+ $location.path().split("/")[3]
+                }).
+                    success(function (data, status, headers, config) {
+                        $scope.students = data;
+                        $scope.currentPeriodId = $location.path().split("/")[3];
+                    }).
+                    error(function (data, status, headers, config) {
+                        $scope.error = data;
+                    });
+
+            }).
+            error(function (data, status, headers, config) {
+                $scope.error = data;
+            });
+        $http({
+            method: 'GET',
+            url: '/tasks/'+ $location.path().split("/")[4]
+        }).
+            success(function (data, status, headers, config) {
+                $scope.currentTask = data;
+            }).
+            error(function (data, status, headers, config) {
+                $scope.error = data;
+            });
+        $scope.savePointsForAll = function(){
+            $scope.students.forEach(function(student){
+                $http({
+                    method: 'PUT',
+                    url: '/student/'+student._id+'/'+$scope.currentTask._id+'/'+student.newPoints
+                })
+                    .success(function (data, status, headers, config) {
+                        $scope.feedback = "Points registered!"
+                    }).
+                    error(function (data,         status, headers, config) {
+                        $scope.feedback = data;
+                    });
+            })
         }
     });

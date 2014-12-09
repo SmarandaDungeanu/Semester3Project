@@ -29,25 +29,37 @@
 
  <!--NEW STUDENT FORM-->
 <div class="col-md-3" style="border: thin lightblue solid; border-radius: 5px;padding: 1em;margin-top: 20px" class="form-group" ng-show="showStudentForm">
-    <form class="form-horizontal">
+    <form class="form-horizontal" ng-show="showNewStud">
         <fieldset>
             <legend>New Student</legend>
             <label for="fname">First name: </label>
-            <input type="text" ng-model="newStudent.fName" id="fname" placeholder="First name" class="form-control">
+            <input type="text" ng-model="newStudent.fName" id="fname" placeholder="First name" class="form-control" required>
 
             <label for="lname">Last name: </label>
-            <input type="text" ng-model="newStudent.lName" id="lname" placeholder="Last name" class="form-control">
+            <input type="text" ng-model="newStudent.lName" id="lname" placeholder="Last name" class="form-control" required>
 
             <label for="email">Email: </label>
-            <input type="email" ng-model="newStudent.email" id="email" placeholder="Email" class="form-control">
+            <input type="email" ng-model="newStudent.email" id="email" placeholder="Email" class="form-control" required>
 
             <label for="username">Username: </label>
-            <input type="text" ng-model="newStudent.username" id="username" placeholder="New username" class="form-control">
+            <input type="text" ng-model="newStudent.username" id="username" placeholder="New username" class="form-control" required>
 
             </br>
             <button class="btn btn-primary" type="submit" ng-click="addStudentForPeriod()">Save Student</button>
-            <button class="btn btn-primary" ng-click="cancel()">Cancel</button>
+            <button class="btn btn-primary" ng-click="cancel()">Cancel</button></br></br>
+            <span><a href="" ng-click="openStudentsDropdown()">Chose existing student</a></span>
 
         </fieldset>
     </form>
+
+    <!--EXISTING STUDENTS-->
+    <div  ng-show="showDropDown">
+        <select class="form-control" ng-model="newStudent" ng-options="student.fName + ' ' + student.lName for student in allStudents">
+            <option value="">-- choose student --</option>
+        </select>
+        </br>
+        <button class="btn btn-primary" ng-click="addExistingStudentForPeriod()">Save</button>
+        <button class="btn btn-primary" ng-click="cancel()">Cancel</button></br></br>
+        <span><a href="" ng-click="createNewStudent()">Create new student</a></span>
+    </div>
 </div>

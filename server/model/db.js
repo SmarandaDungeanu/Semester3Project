@@ -87,7 +87,6 @@ var studentSchema = mongoose.Schema({
         lName: {type: String, index: true},
         email: {type: String},
         username: {type: String},
-        totalAchievedPoints: {type: Number},
         doneTasks: [{taskId: {type: String}, achievedPoints: {type: Number}}]},
 
     { collection: 'student' }
