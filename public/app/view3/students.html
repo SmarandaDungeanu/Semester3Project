@@ -33,16 +33,16 @@
         <fieldset>
             <legend>New Student</legend>
             <label for="fname">First name: </label>
-            <input type="text" ng-model="newStudent.fName" id="fname" placeholder="First name" class="form-control">
+            <input type="text" ng-model="newStudent.fName" id="fname" placeholder="First name" class="form-control" required>
 
             <label for="lname">Last name: </label>
-            <input type="text" ng-model="newStudent.lName" id="lname" placeholder="Last name" class="form-control">
+            <input type="text" ng-model="newStudent.lName" id="lname" placeholder="Last name" class="form-control" required>
 
             <label for="email">Email: </label>
-            <input type="email" ng-model="newStudent.email" id="email" placeholder="Email" class="form-control">
+            <input type="email" ng-model="newStudent.email" id="email" placeholder="Email" class="form-control" required>
 
             <label for="username">Username: </label>
-            <input type="text" ng-model="newStudent.username" id="username" placeholder="New username" class="form-control">
+            <input type="text" ng-model="newStudent.username" id="username" placeholder="New username" class="form-control" required>
 
             </br>
             <button class="btn btn-primary" type="submit" ng-click="addStudentForPeriod()">Save Student</button>

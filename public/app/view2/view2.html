@@ -1,7 +1,8 @@
 <div class="alert alert-danger" role="alert" ng-show="error">{{error}}</div>
 
 <div class="col-md-9" id="stud">
-  <p> Search:  <input type="search" ng-model="studentfilter" placeholder="Student Name"></p>
+  <label>Student </label>  <input type="search" ng-model="studentfilter" placeholder="Student Name" class="form-control">
+  </br>
   <accordion close-others="true">
     <accordion-group heading="{{student.fName}} {{student.lName}}" ng-click="getClassesForStudent(student._id)" ng-repeat="student in students | orderBy:'name':reverse | filter:studentfilter">
       <table class="table">

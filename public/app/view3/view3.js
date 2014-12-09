@@ -265,12 +265,17 @@ angular.module('myAppRename.view3', ['ngRoute'])
         })
             .success(function (data, status, headers, config) {
                 $scope.allStudents = [];
+                var found = false;
                 data.forEach(function(dropdownStudent){
+                    found = false;
                     $scope.students.forEach(function(student){
-                        if(dropdownStudent._id !== student._id){
-                            $scope.allStudents.push(dropdownStudent);
+                        if(dropdownStudent._id === student._id){
+                            found = true;
                         }
-                    })
+                    });
+                    if(found===false){
+                        $scope.allStudents.push(dropdownStudent);
+                    }
                 });
                 $scope.error = null;
             }).
@@ -284,21 +289,20 @@ angular.module('myAppRename.view3', ['ngRoute'])
     };
     $scope.addExistingStudentForPeriod = function(){
             $http({
-                method: 'POST',
+                method: 'PUT',
                 url: '/add/'+ $scope.currentPeriodId + '/' + $scope.newStudent._id
             }).
                 success(function (data, status, headers, config) {
                     $http({
                         method: 'PUT',
-                        url: '/students/'+$scope.currentPeriodId+'/'+$scope.newStudent._id
+                        url: '/students/'+$scope.currentPeriodId+'/'+data._id
                     }).
                         success(function (data, status, headers, config) {
-
+                            $scope.students.push(data);
                         })
                         .error(function (data, status, headers, config) {
                             $scope.error = data;
                         });
-                    $scope.students.push(data);
                 })
                 .error(function (data, status, headers, config) {
                     $scope.error = data;
