@@ -244,7 +244,6 @@ router.get('/periods/:perId', function(req,res){
 router.get('/semesters/class/:clsId', function(req,res){
     data.getClassById(req.params.clsId, function(err, cls){
         if(err){
-            console.log(err);
             return err;
         }
         data.getSemestersOfClass(cls, function(err, semesters){
@@ -253,6 +252,15 @@ router.get('/semesters/class/:clsId', function(req,res){
             }
             res.end(JSON.stringify(semesters));
         });
+    })
+});
+
+router.get('/tasks/:taskId', function(req, res){
+    data.getTaskById(req.params.taskId, function(err, task){
+        if(err){
+            return err;
+        }
+        res.end(JSON.stringify(task));
     })
 });
 
@@ -397,6 +405,23 @@ router.post('/student/:perId/:fName/:lName/:email/:username', function(req,res){
        })
    })
 });
+
+//add existing student to a period
+router.post('/add/:perId/:studId', function (req, res){
+    data.getPeriodById(req.params.perId, function(err, period){
+        if(err){
+            return err;
+        }
+        period.studentIds.push({sid: req.params.studId});
+        data.updatePeriod(period.toJSON(), function(err, updatedPeriod){
+            if(err){
+                return err;
+            }
+            res.end();
+        })
+    })
+});
+
 //assign task to all students in period when adding a new task
 router.put("/tasks/:perId/:taskId",function(req, res){
    data.getPeriodById(req.params.perId, function(err, period){
@@ -446,6 +471,8 @@ router.put('/students/:perId/:studId', function(req, res){
         });
     })
 });
+
+
 
 //update student's achieved points for a task
 router.put('/student/:studId/:taskId/:points', function(req, res){

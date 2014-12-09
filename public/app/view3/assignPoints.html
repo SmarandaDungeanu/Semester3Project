@@ -1,0 +1,12 @@
+ <div class="col-md-12" id="points">
+    <form name="studentForm">
+        <legend>Task {{currentTask.name}}</legend>
+        <div class="form-group" ng-repeat="student in students">
+            <label>{{ student.fName }} {{ student.lName}}</label>
+            <input type="number" class="form-control" ng-model="student.newPoints" placeholder="Enter achieved points" required>
+        </div>
+        </br>
+        <button class="btn btn-primary" ng-click="savePointsForAll()">Save</button>
+        <span>{{feedback}}</span>
+    </form>
+ </div>
