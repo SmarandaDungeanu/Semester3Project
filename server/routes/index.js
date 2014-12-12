@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var jwt = require('jsonwebtoken');
 var data = require('../model/dataLayer');
-
+var usersLogin = require('../NodeJPA/usersLogin');
 
 
 
@@ -14,38 +14,44 @@ router.get('/', function(req, res) {
 
 
 router.post('/authenticate', function (req, res) {
-  //TODO: Go and get UserName Password from "somewhere"
-  //if is invalid, return 401
-   if (req.body.username === 'student' && req.body.password === 'test') {
-    var profile = {
-      username: 'Bo the Student',
-      role: "user",
-      id: 1000
-    };
-    // We are sending the profile inside the token
-    var token = jwt.sign(profile, require("../security/secrets").secretTokenUser, { expiresInMinutes: 60*5 });
-    res.json({ token: token });
-    return;
-  }
+    //TODO: Go and get UserName Password from "somewhere"
+    //if is invalid, return 401
 
-  if (req.body.username === 'teacher' && req.body.password === 'test') {
-    var profile = {
-      username: 'Peter the Teacher',
-      role: "admin",
-      id: 123423
-    };
-    // We are sending the profile inside the token
-    var token = jwt.sign(profile, require("../security/secrets").secretTokenAdmin, { expiresInMinutes: 60*5 });
-    res.json({ token: token });
-    return;
-  }
-
-  else{
-    res.status(401).send('Wrong user or password');
-    return;
-  }
+    console.log("res.body.username&pass: " + req);
+    usersLogin.checkLogin(req.body.username, req.body.password, function (err, data1) {
+        if (err) {
+            res.status(401).send('Wrong user or password');
+            return;
+        } else {
+            if (data1 === '\"student\"') {
+                data.getStudentByUsername(req.body.username, function(err, student){
+                    if(err){
+                        return err;
+                    }
+                    student.role = 'student';
+//                    We are sending the profile inside the token
+                    var token = jwt.sign(student, require("../security/secrets").secretTokenUser, { expiresInMinutes: 60 * 5 });
+                    res.json({ token: token });
+                    return;
+                });
+            } else
+            if (data1 === '\"teacher\"') {
+                data.getTeacherByUsername(req.body.username, function(err, teacher){
+                    if(err){
+                        return err;
+                    }
+                    teacher.role = 'teacher';
+//                    We are sending the profile inside the token
+                    var token = jwt.sign(teacher, require("../security/secrets").secretTokenUser, { expiresInMinutes: 60 * 5 });
+                    res.json({ token: token });
+                    return;
+                });
+            } else {
+                res.status(401).send('Wrong user or password');
+            }
+        }
+    });
 });
-
 
 //Get Partials made as Views
 router.get('/partials/:partialName', function(req, res) {
@@ -68,6 +74,24 @@ router.get('/teachers/:teacherId', function(req,res) {
             return err;
         }
         res.end(JSON.stringify(teacher));
+    })
+});
+
+router.get('/teachers/username/:username', function(req,res) {
+    data.getTeacherByUsername(req.params.username, function(err, teacher){
+        if(err){
+            return err;
+        }
+        res.end(JSON.stringify(teacher));
+    })
+});
+
+router.get('/students/username/:username', function(req,res) {
+    data.getStudentByUsername(req.params.username, function(err, student){
+        if(err){
+            return err;
+        }
+        res.end(JSON.stringify(student));
     })
 });
 
@@ -385,7 +409,8 @@ router.post('/student/:perId/:fName/:lName/:email/:username', function(req,res){
        fName: req.params.fName,
        lName: req.params.lName,
        email: req.params.email,
-       username: req.params.username
+       username: req.params.username,
+       role: 'student'
    };
    data.createNewStudent(student, function(err, student){
        if(err){

@@ -50,7 +50,8 @@ var teacherSchema = mongoose.Schema({
         fName: {type: String, index: true},
         lName: {type: String, index: true},
         email: {type: String},
-        username: {type: String},
+        username: {type: String, unique: true},
+        role: {type: String, required: true},
         classIds: [{cid: {type: String, ref: 'class'}}]},
 
     { collection: 'teacher' }
@@ -86,7 +87,8 @@ var studentSchema = mongoose.Schema({
         fName: {type: String, index: true},
         lName: {type: String, index: true},
         email: {type: String},
-        username: {type: String},
+        username: {type: String, unique: true},
+        role: {type: String, required: true},
         doneTasks: [{taskId: {type: String}, achievedPoints: {type: Number}}]},
 
     { collection: 'student' }

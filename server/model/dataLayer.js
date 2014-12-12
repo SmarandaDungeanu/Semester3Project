@@ -242,6 +242,24 @@ function getStudentById(studId, callback){
     });
 }
 
+function getStudentByUsername(username, callback){
+    model.StudentModel.findOne({'username': username}, function(err, data){
+        if (err) {
+            return callback(err);
+        }
+        callback(null,data);
+    });
+}
+
+function getTeacherByUsername(username, callback){
+    model.TeacherModel.findOne({'username': username}, function(err, data){
+        if (err) {
+            return callback(err);
+        }
+        callback(null,data);
+    });
+}
+
 function getStudentsOfPeriod(period, callback){
     var sId = [];
     period.studentIds.forEach(function(studentId){
@@ -319,6 +337,8 @@ function getPeriodForTask(taskId, callback){
      getStudentsOfPeriod: getStudentsOfPeriod,
      createNewStudent: createNewStudent,
      updateStudent:updateStudent,
-     getTaskById: getTaskById
+     getTaskById: getTaskById,
+     getTeacherByUsername: getTeacherByUsername,
+     getStudentByUsername: getStudentByUsername
     // savePeriod: savePeriod
  };

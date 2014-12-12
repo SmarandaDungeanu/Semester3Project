@@ -36,8 +36,9 @@ angular.module('myAppRename.controllers', [ 'ui.bootstrap']).
           var encodedProfile = data.token.split('.')[1];
           var profile = JSON.parse(url_base64_decode(encodedProfile));
           $scope.username = profile.username;
-          $scope.isAdmin = profile.role == "admin";
-          $scope.isUser = !$scope.isAdmin;
+          $scope.userId = profile._id;
+          $scope.isAdmin = profile.role == "teacher";
+          $scope.isUser = profile.role == "student";
           $scope.error = null;
         })
         .error(function (data, status, headers, config) {
@@ -49,10 +50,25 @@ angular.module('myAppRename.controllers', [ 'ui.bootstrap']).
         });
     };
 
+     function init(){
+        if($window.sessionStorage.token){
+
+            $scope.isAuthenticated = true;
+            var encodedProfile = sessionStorage.token.split('.')[1];
+            var profile = JSON.parse(url_base64_decode(encodedProfile));
+            $scope.username = profile.username;
+            $scope.isAdmin = profile.role == "teacher";
+            $scope.isUser = profile.role == "student";
+            $scope.error = null;
+        }
+    };
+    init();
+
     $scope.logout = function () {
       $scope.isAuthenticated = false;
       $scope.isAdmin =false;
       $scope.isUser = false;
+
       delete $window.sessionStorage.token;
       $location.path("/view1");
     }
