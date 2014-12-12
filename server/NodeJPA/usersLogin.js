@@ -1,6 +1,6 @@
 var request = require('request');
 var http = require('http');
-var JPA_host = 'http://localhost:8090/users';
+var JPA_host = 'http://cnlearning.cloudapp.net:8090/users';
 
 function getParticularAdmin(username, password, callback) {
     console.log('I did it, Yoda! I am checking your info : ' + username + ' and ' + password);
