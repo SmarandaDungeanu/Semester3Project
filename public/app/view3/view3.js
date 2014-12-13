@@ -3,7 +3,7 @@
 angular.module('myAppRename.view3', ['ngRoute'])
 
 .config(['$routeProvider', function($routeProvider) {
-  $routeProvider.when('/view3/teacher/:teacherId', {
+  $routeProvider.when('/view3/teacher', {
     templateUrl: 'app/view3/view3.html',
     controller: 'View3Ctrl'
   })
@@ -46,11 +46,10 @@ angular.module('myAppRename.view3', ['ngRoute'])
                     $scope.error = data;
                 });
         };
-        var teacherId = $location.path().split("/")[3];
         $scope.getAllClasses = function(){
             $http({
                 method: 'GET',
-                url: "/classes/teacher/"+ teacherId
+                url: "/classes/teacher/"+ $scope.userId
             }).
                 success(function (data, status, headers, config) {
                     $scope.classes = data;
@@ -127,7 +126,7 @@ angular.module('myAppRename.view3', ['ngRoute'])
             $scope.saveClass = function(){
                 $http({
                     method: 'POST',
-                    url: '/class/'+$scope.newCls.name+'/'+teacherId
+                    url: '/class/'+$scope.newCls.name+'/'+$scope.userId
                 }).
                     success(function (data, status, headers, config){
                         //  $scope.classes.push(data);
