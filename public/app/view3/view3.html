@@ -34,6 +34,20 @@
     </accordion-group>
   </accordion>
   <button class="btn btn-primary" ng-click="createNewSemester()" ng-show="clicked">Add More Semesters</button>
+  </br>
+  </br>
+  <span><a href="" ng-show="clicked" ng-click="openTeacherDropdown()">Assign new teacher</a></span>
+</div>
+
+
+<!--EXISTING TEACHERS-->
+<div class="col-md-3" style="border: thin lightblue solid; border-radius: 5px;padding: 1em;margin-top: 20px" class="form-group" ng-show="showDropdown">
+  <select class="form-control" ng-model="newTeacher" ng-options="teacher.fName + ' ' + teacher.lName for teacher in allTeachers">
+    <option value="">-- choose teacher --</option>
+  </select>
+  </br>
+  <button class="btn btn-primary" ng-click="addExistingTeacherForClass()">Save</button>
+  <button class="btn btn-primary" ng-click="cancel()">Cancel</button></br></br>
 </div>
 
   <!--NEW SEMESTER FORM-->
@@ -44,11 +58,11 @@
       <label for="sname">Name: </label>
       <input type="text" ng-model="newSem.name" id="sname" placeholder="Name" class="form-control">
 
-      <label for="startingDate">Starting Date: </label>
-      <input type="date" ng-model="newSem.startingDate" id="startingDate" class="form-control">
+      <label for="maxPoints">Maximum Points: </label>
+      <input type="number" ng-model="newSem.maxPoints" id="maxPoints" placeholder="Maximum Points" class="form-control">
 
-      <label for="endingDate">Ending Date: </label>
-      <input type="date" ng-model="newSem.endingDate" id="endingDate" class="form-control">
+      <label for="reqPoints">Required Points: </label>
+      <input type="number" ng-model="newSem.reqPoints" id="reqPoints" placeholder="Required Points" class="form-control">
 
       </br>
       <button class="btn btn-primary" ng-click="saveSemester()">Save Semester</button>
@@ -65,13 +79,6 @@
       <legend>New Period - for {{currentSemesterName}}</legend>
       <label for="pname">Name: </label>
       <input type="text" ng-model="newPer.name" id="pname" placeholder="Name" class="form-control">
-
-      <label for="maxPoints">Maximum Points: </label>
-      <input type="number" ng-model="newPer.maxPoints" id="maxPoints" placeholder="Maximum Points" class="form-control">
-
-      <label for="reqPoints">Required Points: </label>
-      <input type="number" ng-model="newPer.reqPoints" id="reqPoints" placeholder="Required Points" class="form-control">
-
 
       </br>
       <button class="btn btn-primary" ng-click="addPeriodForSemester()">Add Period</button>

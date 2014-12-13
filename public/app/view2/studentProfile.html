@@ -12,12 +12,12 @@
     </tbody>
 </table>
 <accordion close-others="true">
-    <accordion-group heading="{{sem.name}} | Achieved points: {{getPointsForSemester(sem).achievedPointsForSemester}} | Maximum points: {{getPointsForSemester(sem).maximumPointsForSemester}} | Required points: {{getPointsForSemester(sem).requiredPointsForSemester}}" ng-repeat="sem in semesters | orderBy:'name':reverse">
+    <accordion-group heading="{{sem.name}} | Achieved points: {{getPointsForSemester(sem).achievedPointsForSemester}} | Maximum points: {{sem.reqPoints}}" ng-repeat="sem in semesters | orderBy:'name':reverse">
         <div  ng-repeat="period in sem.periods | orderBy:'name':reverse" ng-init="points = getPointsForPeriod(period)">
             <table class="table">
                 <thead>
                     <tr>
-                        <th>{{period.name}}</th><td> You have {{ points.achievedPointsForPeriod }} points out of {{ points.maximumPointsForPeriod}}, required: {{period.reqPoints }}</td>
+                        <th>{{period.name}}</th><td> You have {{ points.achievedPointsForPeriod }} points out of {{ points.maximumPointsForPeriod}}</td>
                     </tr>
                 </thead>
                 <tbody ng-repeat="task in period.tasks | orderBy:'name':reverse">

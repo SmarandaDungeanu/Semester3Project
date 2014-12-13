@@ -206,8 +206,29 @@ function createNewStudent(student, password, callback) {
     });
 }
 
+function createNewTeacher(teacher, password, callback) {
+    model.TeacherModel.create(teacher, function(err, data){
+        if (err) {
+            return callback(err);
+        }
+        usersLogin.addUser(teacher.username, password, teacher.role, function(error, data2) {
+            if(error) return callback(error);
+        });
+        callback(null,data);
+    });
+}
+
 function updateStudent(student, callback){
     model.StudentModel.findByIdAndUpdate(student._id,student,function(err, data){
+        if(err){
+            return callback(err);
+        }
+        callback(null, data)
+    });
+}
+
+function updateTeacher(teacher, callback){
+    model.TeacherModel.findByIdAndUpdate(teacher._id,teacher,function(err, data){
         if(err){
             return callback(err);
         }
@@ -320,7 +341,6 @@ function getPeriodForTask(taskId, callback){
      getAllSemesters: getAllSemesters,
      getSemesterById: getSemesterById,
      getPeriodsOfSemester: getPeriodsOfSemester,
-   //  saveSemester: saveSemester,
      createNewSemester: createNewSemester,
      updateSemester: updateSemester,
      createNewPeriod: createNewPeriod,
@@ -343,6 +363,7 @@ function getPeriodForTask(taskId, callback){
      updateStudent:updateStudent,
      getTaskById: getTaskById,
      getTeacherByUsername: getTeacherByUsername,
-     getStudentByUsername: getStudentByUsername
-    // savePeriod: savePeriod
+     getStudentByUsername: getStudentByUsername,
+     updateTeacher: updateTeacher,
+     createNewTeacher: createNewTeacher
  };
