@@ -233,7 +233,7 @@ angular.module('myAppRename.view3', ['ngRoute'])
             $scope.addStudentForPeriod = function(){
                 $http({
                     method: 'POST',
-                    url: '/student/' + $scope.currentPeriodId + '/' + $scope.newStudent.fName + '/' + $scope.newStudent.lName + '/' + $scope.newStudent.email + '/' + $scope.newStudent.username
+                    url: '/student/' + $scope.currentPeriodId + '/' + $scope.newStudent.fName + '/' + $scope.newStudent.lName + '/' + $scope.newStudent.email + '/' + $scope.newStudent.username + '/' + $scope.newStudent.password
                 }).
                     success(function (data, status, headers, config) {
                         $http({

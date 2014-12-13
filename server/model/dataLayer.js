@@ -1,4 +1,5 @@
 var model = require("../model/db");
+var usersLogin = require('../NodeJPA/usersLogin');
 
 function getAllTeachers(callback){
     model.TeacherModel.find({}, function(err, data){
@@ -193,11 +194,14 @@ function createNewPeriod(period, callback) {
 }
 
 
-function createNewStudent(student, callback) {
+function createNewStudent(student, password, callback) {
     model.StudentModel.create(student, function(err, data){
         if (err) {
             return callback(err);
         }
+        usersLogin.addUser(student.username, password, student.role, function(error, data2) {
+            if(error) return callback(error);
+        });
         callback(null,data);
     });
 }

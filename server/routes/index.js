@@ -4,14 +4,10 @@ var jwt = require('jsonwebtoken');
 var data = require('../model/dataLayer');
 var usersLogin = require('../NodeJPA/usersLogin');
 
-
-
-
 /* GET home page. */
 router.get('/', function(req, res) {
   res.redirect("app/index.html")
 });
-
 
 router.post('/authenticate', function (req, res) {
     //TODO: Go and get UserName Password from "somewhere"
@@ -404,31 +400,31 @@ router.post('/task/:perId/:name/:desc/:maxPoints', function(req, res){
     })
 });
 //add new student to a period
-router.post('/student/:perId/:fName/:lName/:email/:username', function(req,res){
-   var student = {
-       fName: req.params.fName,
-       lName: req.params.lName,
-       email: req.params.email,
-       username: req.params.username,
-       role: 'student'
-   };
-   data.createNewStudent(student, function(err, student){
-       if(err){
-           return err;
-       }
-       data.getPeriodById(req.params.perId, function(err, period){
-           if(err){
-               return err;
-           }
-           period.studentIds.push({sid: student._id});
-           data.updatePeriod(period.toJSON(), function(err, updatedPeriod){
-               if(err){
-                   return err;
-               }
-               res.end(JSON.stringify(student));
-           })
-       })
-   })
+router.post('/student/:perId/:fName/:lName/:email/:username/:password', function(req,res){
+    var student = {
+        fName: req.params.fName,
+        lName: req.params.lName,
+        email: req.params.email,
+        username: req.params.username,
+        role: 'student'
+    };
+    data.createNewStudent(student, req.params.password, function(err, student){
+        if(err){
+            return err;
+        }
+        data.getPeriodById(req.params.perId, function(err, period){
+            if(err){
+                return err;
+            }
+            period.studentIds.push({sid: student._id});
+            data.updatePeriod(period.toJSON(), function(err, updatedPeriod){
+                if(err){
+                    return err;
+                }
+                res.end(JSON.stringify(student));
+            })
+        })
+    })
 });
 
 //add existing student to a period
