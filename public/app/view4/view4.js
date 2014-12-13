@@ -3,7 +3,7 @@
 angular.module('myAppRename.view4', ['ngRoute'])
 
 .config(['$routeProvider', function($routeProvider) {
-  $routeProvider.when('/view4/:studId', {
+  $routeProvider.when('/view4', {
     templateUrl: 'app/view4/view4.html',
     controller: 'View4Ctrl'
   });
@@ -12,18 +12,18 @@ angular.module('myAppRename.view4', ['ngRoute'])
 .controller('View4Ctrl', ['$scope', '$http', '$location', function ($scope, $http, $location) {
         $http({
             method: 'GET',
-            url: '/students/'+ $location.path().split("/")[2]
+            url: '/students/'+ $scope.userId
         })
             .success(function (data, status, headers, config) {
                 $scope.student = data;
                 $http({
                     method: 'GET',
-                    url: '/semesters/student/'+ $location.path().split("/")[2]
+                    url: '/semesters/student/'+ $scope.userId
                 })
                     .success(function (semesters, status, headers, config) {
                         $http({
                             method: 'GET',
-                            url: '/periods/student/'+ $location.path().split("/")[2]
+                            url: '/periods/student/'+ $scope.userId
                         })
                             .success(function (periods, status, headers, config) {
                                 $scope.semesters = [];
