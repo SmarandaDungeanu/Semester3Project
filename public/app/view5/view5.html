@@ -1,0 +1,48 @@
+<div class="alert alert-danger" role="alert" ng-show="error">{{error}}</div>
+
+<div class="col-md-9" id="stud">
+    <label>Teacher </label>  <input type="search" ng-model="teacherfilter" placeholder="Teacher Name" class="form-control">
+    </br>
+    <accordion close-others="true">
+        <accordion-group heading="{{teacher.fName}} {{teacher.lName}}" ng-repeat="teacher in teachers | orderBy:'name':reverse | filter:teacherfilter">
+            <table class="table">
+                <thead>
+                <tr>
+                    <td><b>Details</b></td>
+                </tr>
+                </thead>
+                <tr>
+                    <td>Email</td><td>{{teacher.email}}</td>
+                </tr>
+            </table>
+        </accordion-group>
+    </accordion>
+    <button class="btn btn-primary" ng-click="createNewTeacher()" ng-show="isAdmin">Add More Teachers</button>
+</div>
+
+<!--NEW TEACHER FORM-->
+<div class="col-md-3" style="border: thin lightblue solid; border-radius: 5px;padding: 1em;margin-top: 20px" class="form-group" ng-show="showNewTeacher">
+    <form class="form-horizontal">
+        <fieldset>
+            <legend>New Teacher</legend>
+            <label for="fname">First name: </label>
+            <input type="text" ng-model="newTeacher.fName" id="fname" placeholder="First name" class="form-control" required>
+
+            <label for="lname">Last name: </label>
+            <input type="text" ng-model="newTeacher.lName" id="lname" placeholder="Last name" class="form-control" required>
+
+            <label for="email">Email: </label>
+            <input type="email" ng-model="newTeacher.email" id="email" placeholder="Email" class="form-control" required>
+
+            <label for="username">Username: </label>
+            <input type="text" ng-model="newTeacher.username" id="username" placeholder="New username" class="form-control" required>
+
+            <label for="password">Password: </label>
+            <input type="password" ng-model="newTeacher.password" id="password" placeholder="New password" class="form-control" required>
+
+            </br>
+            <button class="btn btn-primary" type="submit" ng-click="addTeacher()">Save Teacher</button>
+            <button class="btn btn-primary" ng-click="cancel()">Cancel</button></br></br>
+
+        </fieldset>
+    </form>

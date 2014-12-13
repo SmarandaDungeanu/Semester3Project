@@ -3,7 +3,7 @@
 angular.module('myAppRename.view3', ['ngRoute'])
 
 .config(['$routeProvider', function($routeProvider) {
-  $routeProvider.when('/view3', {
+  $routeProvider.when('/view3/teacher/:teacherId', {
     templateUrl: 'app/view3/view3.html',
     controller: 'View3Ctrl'
   })
@@ -20,9 +20,13 @@ angular.module('myAppRename.view3', ['ngRoute'])
           controller: 'PointsController'
       })
 }])
-    .controller('View3Ctrl', function ($scope, $http) {
+    .controller('View3Ctrl', function ($scope, $http, $location) {
 
         $scope.getSemestersOfClass = function(cls){
+            $scope.showDropdown = false;
+            $scope.showSemForm = false;
+            $scope.showPerForm = false;
+            $scope.showClsForm = false;
             $http({
                 method: 'GET',
                 url: '/semesters/class/'+cls._id
@@ -42,11 +46,11 @@ angular.module('myAppRename.view3', ['ngRoute'])
                     $scope.error = data;
                 });
         };
-
+        var teacherId = $location.path().split("/")[3];
         $scope.getAllClasses = function(){
             $http({
                 method: 'GET',
-                url: '/classes'
+                url: "/classes/teacher/"+ teacherId
             }).
                 success(function (data, status, headers, config) {
                     $scope.classes = data;
@@ -77,11 +81,11 @@ angular.module('myAppRename.view3', ['ngRoute'])
             $scope.showSemForm = true;
             $scope.showPerForm = false;
             $scope.showClsForm = false;
-
+            $scope.showDropdown = false;
             $scope.saveSemester = function(){
                 $http({
                     method: 'POST',
-                    url: '/semester/'+$scope.currentClassId+'/'+$scope.newSem.name+'/'+$scope.newSem.startingDate+'/'+$scope.newSem.endingDate
+                    url: '/semester/'+$scope.currentClassId+'/'+$scope.newSem.name+'/'+$scope.newSem.maxPoints+'/'+$scope.newSem.reqPoints
                 }).
                     success(function (data, status, headers, config){
                         $scope.semesters.push(data);
@@ -97,11 +101,12 @@ angular.module('myAppRename.view3', ['ngRoute'])
             $scope.showSemForm = false;
             $scope.showPerForm = true;
             $scope.showClsForm = false;
+            $scope.showDropdown = false;
             $scope.currentSemesterName = semester.name;
             $scope.addPeriodForSemester = function(){
                 $http({
                     method: 'POST',
-                    url: '/period/'+semester._id+'/'+$scope.newPer.name+'/'+$scope.newPer.maxPoints+'/'+$scope.newPer.reqPoints
+                    url: '/period/'+semester._id+'/'+$scope.newPer.name
                 }).
                     success(function (data, status, headers, config){
 
@@ -118,10 +123,11 @@ angular.module('myAppRename.view3', ['ngRoute'])
             $scope.showSemForm = false;
             $scope.showPerForm = false;
             $scope.showClsForm = true;
+            $scope.showDropdown = false;
             $scope.saveClass = function(){
                 $http({
                     method: 'POST',
-                    url: '/class/'+$scope.newCls.name
+                    url: '/class/'+$scope.newCls.name+'/'+teacherId
                 }).
                     success(function (data, status, headers, config){
                         //  $scope.classes.push(data);
@@ -133,11 +139,61 @@ angular.module('myAppRename.view3', ['ngRoute'])
             };
         };
 
+        $scope.openTeacherDropdown = function(){
+            $scope.showDropdown = true;
+            $scope.showSemForm = false;
+            $scope.showPerForm = false;
+            $scope.showClsForm = false;
+            $scope.newTeacher = {};
+            $http({
+                method: 'GET',
+                url: '/teachers'
+            })
+                .success(function (data, status, headers, config) {
+                    $scope.allTeachers = [];
+                    var found = false;
+                    data.forEach(function(dropdownTeacher){
+                        found = false;
+                        dropdownTeacher.classIds.forEach(function(classId){
+                            if(classId.cid === $scope.currentClassId){
+                                found = true;
+                            }
+                        });
+                        if(found === false){
+                            $scope.allTeachers.push(dropdownTeacher);
+                        }
+                    });
+                    $scope.error = null;
+                }).
+                error(function (data, status, headers, config) {
+                    if (status == 401) {
+                        $scope.error = "You are not authenticated to request these data";
+                        return;
+                    }
+                    $scope.error = data;
+                });
+        };
+
+        $scope.addExistingTeacherForClass = function(){
+            $http({
+                method: 'PUT',
+                url: '/add/teacher/'+ $scope.currentClassId + '/' + $scope.newTeacher._id
+            }).
+                success(function (data, status, headers, config) {
+                    console.log(data.fName+" assigned to class "+ $scope.currentClassId)
+                })
+                .error(function (data, status, headers, config) {
+                    $scope.error = data;
+                });
+            $scope.newTeacher = {};
+        };
+
 
         $scope.cancel = function(){
             $scope.showSemForm = false;
             $scope.showPerForm = false;
             $scope.showClsForm = false;
+            $scope.showDropdown = false;
         };
 
 
@@ -145,6 +201,7 @@ angular.module('myAppRename.view3', ['ngRoute'])
         $scope.showPerForm = false;
         $scope.showClsForm = false;
         $scope.clicked = false;
+        $scope.showDropdown = false;
 
     })
     .controller('TasksCtrl', function($scope, $http, $location){

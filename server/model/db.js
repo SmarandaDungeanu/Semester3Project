@@ -52,8 +52,8 @@ var classSchema = mongoose.Schema({
 
 var semesterSchema = mongoose.Schema({
         name: { type: String, index: true},
-        startingDate: {type: Date},
-        endingDate: {type: Date},
+        maxPoints: {type: Number},
+        reqPoints: {type: Number},
         periodIds: [{pid: {type: String, ref: 'period'}}]},
 
     { collection: 'semester' }
@@ -61,8 +61,6 @@ var semesterSchema = mongoose.Schema({
 
 var periodSchema = mongoose.Schema({
         name: { type: String, index: true},
-        maxPoints: {type: Number},
-        reqPoints: {type: Number},
         taskIds: [{tid: {type: String}}],
         studentIds: [{sid: {type: String}}]},
 

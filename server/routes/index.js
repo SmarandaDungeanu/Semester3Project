@@ -211,6 +211,16 @@ router.get('/students', function(req,res){
     })
 });
 
+router.get('/teachers', function(req,res){
+    data.getAllTeachers(function(err, teachers){
+        if(err){
+            return err;
+        }
+        res.end(JSON.stringify(teachers));
+    })
+});
+
+
 router.get('/students/:studId', function(req,res){
     data.getStudentById(req.params.studId, function(err, student){
         if(err){
@@ -312,23 +322,11 @@ router.get('/tasks/period/:perId', function(req,res){
     })
 });
 
-router.post('/class/:name', function(req, res){
-    var cls = {
-        name: req.params.name
-    };
-    data.createNewClass(cls, function(err, semester){
-        if(err){
-            return err;
-        }
-        res.end(JSON.stringify(cls));
-    })
-});
-
-router.post('/semester/:clsId/:name/:startingDate/:endingDate', function(req, res){
+router.post('/semester/:clsId/:name/:maxPoints/:reqPoints', function(req, res){
     var semester = {
         name: req.params.name,
-        startingDate: req.params.startingDate,
-        endingDate: req.params.endingDate
+        maxPoints: req.params.maxPoints,
+        reqPoints: req.params.reqPoints
     };
     data.createNewSemester(semester, function(err, semester){
         if(err){
@@ -349,11 +347,9 @@ router.post('/semester/:clsId/:name/:startingDate/:endingDate', function(req, re
     })
 });
 
-router.post('/period/:semId/:name/:maxPoints/:reqPoints', function(req, res){
+router.post('/period/:semId/:name', function(req, res){
     var period = {
-        name: req.params.name,
-        maxPoints: req.params.maxPoints,
-        reqPoints: req.params.reqPoints
+        name: req.params.name
     };
     data.createNewPeriod(period, function(err, period){
         if(err){
@@ -427,6 +423,49 @@ router.post('/student/:perId/:fName/:lName/:email/:username/:password', function
     })
 });
 
+//add new teacher
+router.post('/teacher/:fName/:lName/:email/:username/:password', function(req,res){
+    var teacher = {
+        fName: req.params.fName,
+        lName: req.params.lName,
+        email: req.params.email,
+        username: req.params.username,
+        role: 'teacher'
+    };
+    data.createNewTeacher(teacher, req.params.password, function(err, teacher){
+        if(err){
+            return err;
+        }
+                res.end(JSON.stringify(teacher));
+    })
+});
+
+
+//add new class to a teacher
+router.post('/class/:name/:teacherId', function(req, res){
+    var cls = {
+        name: req.params.name
+    };
+    data.createNewClass(cls, function(err, cls){
+        if(err){
+            return err;
+        }
+        data.getTeacherById(req.params.teacherId, function(err, teacher){
+            if(err){
+                return err;
+            }
+            teacher.classIds.push({cid: cls._id});
+            data.updateTeacher(teacher.toJSON(), function(err, updatedTeacher){
+                if(err){
+                    return err;
+                }
+                res.end(JSON.stringify(cls));
+            })
+        });
+    })
+});
+
+
 //add existing student to a period
 router.put('/add/:perId/:studId', function (req, res){
     data.getStudentById(req.params.studId, function(err, student){
@@ -447,6 +486,27 @@ router.put('/add/:perId/:studId', function (req, res){
         })
     });
 
+});
+
+//assign an existing teacher to a class
+router.put('/add/teacher/:clsId/:teacherId', function(req, res){
+   data.getTeacherById(req.params.teacherId, function(err, teacher){
+       if(err){
+           return err;
+       }
+       data.getClassById(req.params.clsId, function(err, cls){
+           if(err){
+               return err;
+           }
+           teacher.classIds.push({cid: cls._id});
+           data.updateTeacher(teacher.toJSON(), function(err, updatedTeacher){
+               if(err){
+                   return err;
+               }
+               res.end(JSON.stringify(teacher));
+           })
+       })
+   })
 });
 
 //assign task to all students in period when adding a new task

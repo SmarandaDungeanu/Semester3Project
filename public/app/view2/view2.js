@@ -138,18 +138,12 @@ angular.module('myAppRename.view2', ['ngRoute'])
       };
 
       $scope.getPointsForSemester = function(semester){
-          var max = 0;
           var achieved = 0;
-          var req = 0;
           semester.periods.forEach(function(period){
-              max = max + $scope.getPointsForPeriod(period).maximumPointsForPeriod;
               achieved = achieved + $scope.getPointsForPeriod(period).achievedPointsForPeriod;
-              req = req + period.reqPoints
           });
           return {
-              maximumPointsForSemester: max,
-              achievedPointsForSemester: achieved,
-              requiredPointsForSemester: req
+              achievedPointsForSemester: achieved
           }
       };
 
