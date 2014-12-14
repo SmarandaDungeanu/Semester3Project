@@ -4,3 +4,38 @@
   <li><b style="display: inline-block;width:5em;">Teacher:</b>username = 1, password = 1</li>
   <li><b style="display: inline-block;width:5em;">Student:</b>username = 2, password = 2</li>
 </ul>
+
+<div>
+    <h3>Sitemap</h3>
+    <ul>
+        <li>index</li>
+        <ul>
+            <li>Semester Project</li>
+            <li ng-show="isAdmin">All Students</li>
+            <ul>
+                <li>Student name - See profile</li>
+            </ul>
+            <li ng-show="isAdmin">Classes</li>
+            <ul>
+                <li>Your Classes - Class name</li>
+                <ul>
+                    <li>Semester name - Add more periods</li>
+                    <li>Add More Semesters</li>
+                    <li>Assign New Teacher</li>
+                </ul>
+                <li>Your Classes - Add more classes</li>
+            </ul>
+            <li ng-show="isUser">My Profile</li>
+            <ul>
+                <li>Semester name</li>
+            </ul>
+            <li ng-show="isAdmin||isUser">All Teachers</li>
+            <ul>
+                <li>Teacher name</li>
+                <li ng-show="isAdmin">Add more teachers</li>
+            </ul>
+            <li>GitHub</li>
+            <li>Report</li>
+        </ul>
+    </ul>
+</div>
