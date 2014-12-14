@@ -54,9 +54,10 @@
     </form>
 </div>
 <!--UPLOAD IMAGE-->
-<DIV class="col-md-3" id="upl">
+<div class="col-md-3" id="upl" ng-show="isUser">
     <form action="{{'/images/'+student._id}}" enctype="multipart/form-data" method="post">
-        <input type="file" name="upload" multiple="multiple"><br>
+        <label>Note: you can only upload a .jpg image!</label>
+        <input type="file" name="upload"><br>
         <input type="submit" value="Upload">
     </form>
-</DIV>
+</div>
