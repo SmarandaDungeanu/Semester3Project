@@ -13,8 +13,5 @@ describe('myAppRename.filters', function () {
   });
 
 
-  describe('filterXXXX', function () {
-
-  })
 });
 

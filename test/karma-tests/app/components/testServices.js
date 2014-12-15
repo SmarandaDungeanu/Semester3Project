@@ -16,8 +16,4 @@ describe('myAppRename.services', function () {
     });
   });
 
-
-  describe('XXXService', function () {
-
-  });
 });
