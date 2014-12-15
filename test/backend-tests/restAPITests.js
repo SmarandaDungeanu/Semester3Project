@@ -6,6 +6,7 @@ var app = require("../../server/app");
 var http = require("http");
 var testPort = 9999;
 var testServer;
+var request = require('request');
 var mongoose = require("mongoose");
 var teacher = mongoose.model('teacher');
 var student = mongoose.model('student');
@@ -79,6 +80,20 @@ describe('REST API for /teacher', function () {
                 done();
             });
         })
+    });
+
+    it("Should create teacher ", function (done) {
+        request({
+                method: 'POST',
+                url: "http://localhost:" + testPort + "/teacher/first/last/email@g.dk/username/pass",
+                headers: {'Content-Type': 'application/json'}
+            },
+            function (error, response, body) {
+                response.statusCode.should.equal(200);
+                var n = JSON.parse(body);
+                n.username.should.equal('username');
+                done();
+            })
     });
 });
 
