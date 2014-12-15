@@ -13,8 +13,4 @@ describe('myAppRename.factories', function () {
     });
   });
 
-
-  describe('XXXFactory', function () {
-
-  });
 });
